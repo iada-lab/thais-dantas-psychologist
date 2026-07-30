@@ -9,17 +9,39 @@ import {
   authVerifications,
 } from '@/lib/db/schema'
 
+/**
+ * Origens aceitas no sign-in. Em produção, apenas BETTER_AUTH_URL (com e sem
+ * www). Em desenvolvimento o app é acessado indiferentemente por localhost,
+ * 127.0.0.1 ou 0.0.0.0 — como já previsto em `allowedDevOrigins` no
+ * next.config — e sem elas o sign-in responde 403 "Invalid origin" antes de
+ * chegar a checar a senha.
+ */
+function buildTrustedOrigins(): string[] {
+  const url = process.env.BETTER_AUTH_URL
+  const origins = url
+    ? [url, url.replace(/^(https?:\/\/)(?!www\.)/, '$1www.')]
+    : []
+
+  if (process.env.NODE_ENV !== 'production') {
+    let port = '3000'
+    try {
+      port = new URL(url ?? '').port || port
+    } catch {
+      // BETTER_AUTH_URL ausente ou inválido — mantém a porta padrão
+    }
+    origins.push(
+      `http://localhost:${port}`,
+      `http://127.0.0.1:${port}`,
+      `http://0.0.0.0:${port}`
+    )
+  }
+
+  return [...new Set(origins)]
+}
+
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_BASE_URL ?? process.env.BETTER_AUTH_URL,
-  trustedOrigins: process.env.BETTER_AUTH_URL
-    ? [
-        process.env.BETTER_AUTH_URL,
-        process.env.BETTER_AUTH_URL.replace(
-          /^(https?:\/\/)(?!www\.)/,
-          '$1www.'
-        ),
-      ]
-    : [],
+  trustedOrigins: buildTrustedOrigins(),
   database: drizzleAdapter(db, {
     provider: 'pg',
     schema: {

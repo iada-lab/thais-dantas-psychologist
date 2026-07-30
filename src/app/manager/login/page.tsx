@@ -21,7 +21,14 @@ export default function LoginPage() {
     try {
       const { error } = await authClient.signIn.username({ username, password })
       if (error) {
-        toast.error('Usuário ou senha incorretos.')
+        // Só 401 é credencial errada. Outros status (403 de origem não
+        // confiável, 429 de rate limit, 5xx) viravam "senha incorreta" e
+        // escondiam a causa real.
+        toast.error(
+          error.status === 401
+            ? 'Usuário ou senha incorretos.'
+            : `Não foi possível entrar (${error.status}): ${error.message ?? error.statusText}`
+        )
         setLoading(false)
         return
       }
@@ -35,7 +42,6 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#556040] px-4">
       <div className="w-full max-w-sm">
-
         {/* Marca */}
         <div className="mb-8 flex flex-col items-center gap-3 text-center">
           <div className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5">
@@ -43,7 +49,7 @@ export default function LoginPage() {
           </div>
           <div>
             <p className="font-[family-name:var(--font-cinzel)] text-base font-medium tracking-wide text-white/90">
-              Thais Dantas
+              Tais Dantas
             </p>
             <p className="mt-0.5 text-xs text-white/35">Área restrita</p>
           </div>
@@ -55,7 +61,8 @@ export default function LoginPage() {
           aria-busy={loading}
           className="rounded-2xl px-8 py-8"
           style={{
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02))',
+            background:
+              'linear-gradient(135deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02))',
             backdropFilter: 'blur(12px)',
             WebkitBackdropFilter: 'blur(12px)',
             border: '1px solid rgba(255,255,255,0.09)',
@@ -63,7 +70,6 @@ export default function LoginPage() {
           }}
         >
           <div className="grid gap-5">
-
             <div className="space-y-1.5">
               <Label htmlFor="username" className="text-white/60">
                 Usuário
