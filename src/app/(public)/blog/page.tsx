@@ -3,7 +3,8 @@ import Link from 'next/link'
 import { ArrowRight, Clock, Eye } from 'lucide-react'
 
 import { homeNavItems } from '../_constants/home-nav-items'
-import { WHATSAPP_BOOKING_URL } from '../_constants/contact-links'
+import { BookingLink } from '../_components/booking-link'
+import { getContactLinks } from '@/lib/db/contact-queries'
 import {
   Pagination,
   PaginationContent,
@@ -60,9 +61,10 @@ export default async function BlogPage({
     : 'recent'
   const page = Math.max(1, Number(rawSp.page) || 1)
 
-  const [{ items, total }, availableCategories] = await Promise.all([
+  const [{ items, total }, availableCategories, contact] = await Promise.all([
     getPublishedPosts({ search, categories, sort, page, perPage: PER_PAGE }),
     getPublishedCategories(),
+    getContactLinks(),
   ])
 
   const totalPages = Math.max(1, Math.ceil(total / PER_PAGE))
@@ -89,7 +91,7 @@ export default async function BlogPage({
                 href="/"
                 className="relative z-10 shrink-0 font-[family-name:var(--font-cinzel)] text-sm font-medium tracking-wide text-white transition-colors hover:text-white/90 sm:text-base"
               >
-                Thais Dantas
+                Tais Dantas
               </Link>
               <ul className="pointer-events-none absolute inset-0 flex list-none items-center justify-center gap-x-4 p-0 sm:gap-x-8">
                 {homeNavItems.map(({ href, label }) => (
@@ -104,14 +106,13 @@ export default async function BlogPage({
                 ))}
               </ul>
             </nav>
-            <a
-              href={WHATSAPP_BOOKING_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <BookingLink
+              href={contact.bookingHref}
+              external={contact.bookingExternal}
               className="shrink-0 rounded-full bg-white/95 px-4 py-2 text-sm font-medium text-[#3A4424] shadow-sm transition-colors hover:bg-white sm:px-6 sm:py-2.5"
             >
               Agendar horário
-            </a>
+            </BookingLink>
           </div>
         </header>
 

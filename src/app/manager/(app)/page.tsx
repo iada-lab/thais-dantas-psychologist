@@ -9,7 +9,7 @@ import {
 import { getDashboardStats } from '@/lib/db/dashboard-queries'
 
 export const metadata: Metadata = {
-  title: 'Dashboard | Gestor Thais Dantas',
+  title: 'Dashboard | Gestor Tais Dantas',
 }
 
 export const dynamic = 'force-dynamic'

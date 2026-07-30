@@ -2,12 +2,19 @@ import type { Metadata } from 'next'
 
 import { LabLanding } from './_components/lab-landing'
 import { GOOGLE_REVIEWS_FALLBACK } from './_constants/google-reviews-fallback'
+import { getContactLinks } from '@/lib/db/contact-queries'
+
+// Os contatos vêm do banco (cache com tag 'contato'), então a página não pode
+// ser pré-renderizada no build — o banco só existe em runtime.
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Thais Dantas | Psicóloga',
-  description: 'Atendimento psicológico com Thais Dantas.',
+  title: 'Tais Dantas | Psicóloga',
+  description: 'Atendimento psicológico com Tais Dantas.',
 }
 
-export default function Home() {
-  return <LabLanding googlePlace={GOOGLE_REVIEWS_FALLBACK} />
+export default async function Home() {
+  const contact = await getContactLinks()
+
+  return <LabLanding googlePlace={GOOGLE_REVIEWS_FALLBACK} contact={contact} />
 }

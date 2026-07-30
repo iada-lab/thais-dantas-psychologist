@@ -15,7 +15,7 @@ export function PublicHeader() {
         href="/"
         className="text-lg font-bold tracking-tight text-neutral-900"
       >
-        Thais Dantas
+        Tais Dantas
       </Link>
       <nav aria-label="Navegação principal">
         <ul className="flex list-none gap-6 p-0">

@@ -15,7 +15,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               href="/manager/contato"
               className="relative z-10 shrink-0 font-[family-name:var(--font-cinzel)] text-sm font-medium tracking-wide text-white transition-colors hover:text-white/90 sm:text-base"
             >
-              Thais Dantas
+              Tais Dantas
             </Link>
             <ManagerNav />
           </nav>

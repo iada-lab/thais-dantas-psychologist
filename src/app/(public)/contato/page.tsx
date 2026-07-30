@@ -2,19 +2,22 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Suspense } from 'react'
 
-import { WHATSAPP_BOOKING_URL } from '../_constants/contact-links'
 import { homeNavItems } from '../_constants/home-nav-items'
+import { BookingLink } from '../_components/booking-link'
+import { getContactLinks } from '@/lib/db/contact-queries'
 import { ContatoSection } from './_components/contato-section'
 import { ContatoSkeleton } from './_components/contato-skeleton'
 
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Contato | Thais Dantas',
-  description: 'Entre em contato com Thais Dantas.',
+  title: 'Contato | Tais Dantas',
+  description: 'Entre em contato com Tais Dantas.',
 }
 
-export default function ContatoPage() {
+export default async function ContatoPage() {
+  const contact = await getContactLinks()
+
   return (
     <div className="flex min-h-screen flex-col bg-[#556040] px-6 py-6 sm:px-10 sm:py-8">
       {/* ── NAV ──────────────────────────────────────────────────────────── */}
@@ -28,7 +31,7 @@ export default function ContatoPage() {
               href="/"
               className="relative z-10 shrink-0 font-[family-name:var(--font-cinzel)] text-sm font-medium tracking-wide text-white transition-colors hover:text-white/90 sm:text-base"
             >
-              Thais Dantas
+              Tais Dantas
             </Link>
 
             <ul className="pointer-events-none absolute inset-0 flex list-none items-center justify-center gap-x-4 p-0 sm:gap-x-8">
@@ -45,14 +48,13 @@ export default function ContatoPage() {
             </ul>
           </nav>
 
-          <a
-            href={WHATSAPP_BOOKING_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+          <BookingLink
+            href={contact.bookingHref}
+            external={contact.bookingExternal}
             className="shrink-0 rounded-full bg-white/95 px-4 py-2 text-sm font-medium text-[#3A4424] shadow-sm transition-colors hover:bg-white sm:px-6 sm:py-2.5"
           >
             Agendar horário
-          </a>
+          </BookingLink>
         </div>
       </header>
 

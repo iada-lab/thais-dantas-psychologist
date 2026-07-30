@@ -15,7 +15,8 @@ import {
 import type { CarouselApi } from '@/components/ui/carousel'
 import type { GooglePlaceData } from '../_constants/google-reviews-fallback'
 import { homeNavItems } from '../_constants/home-nav-items'
-import { WHATSAPP_BOOKING_URL } from '../_constants/contact-links'
+import type { ContactLinks } from '@/lib/db/contact-queries'
+import { BookingLink } from './booking-link'
 
 function ReviewAvatar({ name, photoUrl }: { name: string; photoUrl?: string }) {
   const [failed, setFailed] = useState(false)
@@ -66,8 +67,10 @@ function StarRow({
 
 export function LabLanding({
   googlePlace,
+  contact,
 }: {
   googlePlace: GooglePlaceData | null
+  contact: ContactLinks
 }) {
   const [carouselApi, setCarouselApi] = useState<CarouselApi>()
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -130,7 +133,7 @@ export function LabLanding({
                 href="/"
                 className="relative z-10 shrink-0 font-[family-name:var(--font-cinzel)] text-sm font-medium tracking-wide text-white transition-colors hover:text-white/90 sm:text-base"
               >
-                Thais Dantas
+                Tais Dantas
               </Link>
 
               <ul className="pointer-events-none absolute inset-0 flex list-none items-center justify-center gap-x-4 p-0 sm:gap-x-8">
@@ -147,14 +150,13 @@ export function LabLanding({
               </ul>
             </nav>
 
-            <a
-              href={WHATSAPP_BOOKING_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <BookingLink
+              href={contact.bookingHref}
+              external={contact.bookingExternal}
               className="shrink-0 rounded-full bg-white/95 px-4 py-2 text-sm font-medium text-[#3A4424] shadow-sm transition-colors hover:bg-white sm:px-6 sm:py-2.5"
             >
               Agendar horário
-            </a>
+            </BookingLink>
           </div>
         </header>
 
@@ -187,7 +189,7 @@ export function LabLanding({
                 transtornos alimentares, cirurgia bariátrica e endometriose.
               </span>
               <span className="block">
-                Terapia Cognitivo Comportamental — atendimento online ou
+                Terapia Cognitiva Comportamental — atendimento online ou
                 presencial, com acompanhamento personalizado.
               </span>
             </p>
@@ -260,11 +262,11 @@ export function LabLanding({
         },
         {
           tag: 'Abordagem',
-          title: 'Terapia Cognitivo',
+          title: 'Terapia Cognitiva',
           titleEm: 'Comportamental',
           body: 'A TCC é uma das abordagens mais bem estudadas da psicologia. Ela parte da compreensão de que nossos pensamentos influenciam diretamente nossas emoções e comportamentos — e que é possível mudá-los. Com técnicas práticas e foco nos objetivos de cada pessoa, a TCC oferece resultados concretos e duradouros.',
           src: '/TCC.png',
-          alt: 'Terapia Cognitivo Comportamental',
+          alt: 'Terapia Cognitiva Comportamental',
           label: 'TCC',
           flip: false,
           light: true,
@@ -302,14 +304,13 @@ export function LabLanding({
               <p className="max-w-[40ch] text-sm leading-[1.9] text-[#2e2b28] opacity-55">
                 {body}
               </p>
-              <a
-                href={WHATSAPP_BOOKING_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <BookingLink
+                href={contact.bookingHref}
+                external={contact.bookingExternal}
                 className="mt-1 inline-flex items-center gap-2 text-[0.59rem] font-light uppercase tracking-[0.24em] text-[#2e2b28] opacity-40 transition-opacity hover:opacity-80"
               >
                 Agendar consulta <ArrowRight className="size-3" />
-              </a>
+              </BookingLink>
             </div>
           </div>
         )
@@ -559,7 +560,7 @@ export function LabLanding({
               Sobre
             </span>
             <p className="mt-5 text-sm leading-relaxed text-[#2D2D2D]/90 sm:text-base sm:leading-relaxed">
-              Sou Thais Dantas, psicóloga dedicada a oferecer um ambiente seguro
+              Sou Tais Dantas, psicóloga dedicada a oferecer um ambiente seguro
               e acolhedor. Cada encontro é conduzido com escuta qualificada,
               respeito ao seu ritmo e foco no que faz sentido para você. O
               processo terapêutico pode ajudar a compreender padrões emocionais,
@@ -576,8 +577,8 @@ export function LabLanding({
           <div className="mx-auto flex max-w-5xl items-center gap-10 sm:gap-14">
             <div className="relative hidden aspect-square w-52 shrink-0 self-center overflow-hidden rounded-full sm:block">
               <Image
-                src="/thais dantas.png"
-                alt="Thais Dantas"
+                src="/tais-dantas.png"
+                alt="Tais Dantas"
                 fill
                 className="object-cover object-top"
               />
@@ -613,7 +614,7 @@ export function LabLanding({
                   </span>
                   {[
                     'Transtornos Alimentares',
-                    'Terapia Cognitivo Comportamental',
+                    'Terapia Cognitiva Comportamental',
                   ].map(t => (
                     <p
                       key={t}
@@ -666,36 +667,40 @@ export function LabLanding({
             {/* Info */}
             <div className="flex flex-1 flex-col gap-1.5">
               <p className="text-base font-medium text-[#2D2D2D]">
-                Thais Dantas
+                Tais Dantas
               </p>
               <p className="text-sm text-[#2D2D2D]/55">Psicóloga — CRP 09/</p>
               <p className="text-sm text-[#2D2D2D]/55">
                 Especialista em Saúde Alimentar
               </p>
               <div className="mt-1 flex flex-col gap-1">
-                <a
-                  href="tel:+5562992016959"
-                  className="inline-flex items-center gap-1.5 text-sm text-[#556040] hover:opacity-75 transition-opacity"
-                >
-                  <Phone className="size-3.5" strokeWidth={1.5} />
-                  (62) 9 9201-6959
-                </a>
-                <a
-                  href={WHATSAPP_BOOKING_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-sm text-[#556040] hover:opacity-75 transition-opacity"
-                >
-                  <svg
-                    className="size-3.5"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
+                {contact.phone && (
+                  <a
+                    href={contact.phone.href}
+                    className="inline-flex items-center gap-1.5 text-sm text-[#556040] hover:opacity-75 transition-opacity"
                   >
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
-                    <path d="M12 0C5.373 0 0 5.373 0 12c0 2.122.554 4.112 1.523 5.84L0 24l6.338-1.499A11.944 11.944 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.885 0-3.652-.493-5.184-1.357l-.372-.22-3.862.913.978-3.768-.242-.387A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
-                  </svg>
-                  WhatsApp
-                </a>
+                    <Phone className="size-3.5" strokeWidth={1.5} />
+                    {contact.phone.value}
+                  </a>
+                )}
+                {contact.whatsapp && (
+                  <a
+                    href={contact.whatsapp.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-sm text-[#556040] hover:opacity-75 transition-opacity"
+                  >
+                    <svg
+                      className="size-3.5"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                      <path d="M12 0C5.373 0 0 5.373 0 12c0 2.122.554 4.112 1.523 5.84L0 24l6.338-1.499A11.944 11.944 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.885 0-3.652-.493-5.184-1.357l-.372-.22-3.862.913.978-3.768-.242-.387A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+                    </svg>
+                    WhatsApp
+                  </a>
+                )}
               </div>
             </div>
 
@@ -714,15 +719,14 @@ export function LabLanding({
                 Atendimentos online ou presenciais, com horários combinados
                 previamente.
               </p>
-              <a
-                href={WHATSAPP_BOOKING_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <BookingLink
+                href={contact.bookingHref}
+                external={contact.bookingExternal}
                 className="mt-2 inline-flex items-center gap-2 rounded-full border border-[#556040] px-5 py-2.5 text-sm font-medium text-[#3A4424] transition-colors hover:bg-[#556040]/10"
               >
                 Agendar uma consulta
                 <ArrowRight className="size-3.5" strokeWidth={2} />
-              </a>
+              </BookingLink>
             </div>
           </div>
         </section>

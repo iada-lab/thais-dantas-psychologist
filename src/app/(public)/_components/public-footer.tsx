@@ -12,7 +12,7 @@ export function PublicFooter(_props: PublicFooterProps = {}) {
     >
       <div className="mx-auto flex max-w-3xl flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm">
-          <span className="font-bold text-neutral-900">Thais Dantas</span>
+          <span className="font-bold text-neutral-900">Tais Dantas</span>
           <span className="text-neutral-500"> — Psicóloga</span>
         </p>
 
@@ -30,7 +30,7 @@ export function PublicFooter(_props: PublicFooterProps = {}) {
       </div>
 
       <p className="mx-auto mt-8 max-w-3xl text-xs text-neutral-400">
-        © {new Date().getFullYear()} Thais Dantas. Todos os direitos reservados.
+        © {new Date().getFullYear()} Tais Dantas. Todos os direitos reservados.
       </p>
     </footer>
   )

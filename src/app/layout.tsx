@@ -7,10 +7,10 @@ import { Providers } from './providers'
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.BETTER_AUTH_URL ?? 'http://localhost:3000'),
   title: {
-    default: 'Thais Dantas',
-    template: '%s | Thais Dantas',
+    default: 'Tais Dantas',
+    template: '%s | Tais Dantas',
   },
-  description: 'Psicóloga Thais Dantas — atendimento psicológico.',
+  description: 'Psicóloga Tais Dantas — atendimento psicológico.',
   icons: {
     icon: '/favicon.png',
     apple: '/favicon.png',
