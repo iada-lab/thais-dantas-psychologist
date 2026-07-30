@@ -636,14 +636,14 @@ export function LabLanding({
             <div className="flex flex-1 items-center gap-6">
               <div className="h-32 w-48 shrink-0 overflow-hidden rounded-sm">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3822.5896755297!2d-49.26997518508!3d-16.68921308748!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935ef15a77fc9bab%3A0x9d5dfaa6e0d78ec4!2sPontif%C3%ADcia%20Universidade%20Cat%C3%B3lica%20de%20Goi%C3%A1s!5e0!3m2!1spt-BR!2sbr!4v1657549036!5m2!1spt-BR!2sbr"
+                  src="https://maps.google.com/maps?q=-16.71971902331966,-49.2668878132625&z=17&output=embed"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  title="Localização PUC Goiás"
+                  title="Localização do consultório"
                 />
               </div>
               <div className="flex flex-col gap-1">
@@ -651,13 +651,13 @@ export function LabLanding({
                   Localização
                 </p>
                 <p className="mt-1 text-sm font-medium text-[#2D2D2D]">
-                  PUC Goiás
+                  Av. T-4, 1478
                 </p>
+                <p className="text-sm text-[#2D2D2D]/60">Sala 172-B</p>
+                <p className="text-sm text-[#2D2D2D]/60">Setor Bueno</p>
                 <p className="text-sm text-[#2D2D2D]/60">
-                  Av. Universitária, 1440
+                  Goiânia – GO · 74230-030
                 </p>
-                <p className="text-sm text-[#2D2D2D]/60">Setor Universitário</p>
-                <p className="text-sm text-[#2D2D2D]/60">Goiânia – GO</p>
               </div>
             </div>
 

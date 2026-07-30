@@ -138,12 +138,12 @@ export async function ContatoSection() {
             Localização
           </span>
           <h3 className="mt-3 font-[family-name:var(--font-cormorant)] text-2xl font-light leading-tight text-white">
-            PUC Goiás
+            Setor Bueno
           </h3>
           <p className="mt-2 text-[12px] leading-relaxed text-white/45">
-            Av. Universitária, 1440
+            Av. T-4, 1478 — Sala 172-B
             <br />
-            Setor Universitário — Goiânia, GO
+            Goiânia – GO · 74230-030
           </p>
 
           <div
