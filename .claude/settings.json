@@ -21,7 +21,17 @@
       "Bash(curl -s -m 15 \"http://localhost:3000/blog\" -o /dev/null -w 'STATUS:%{http_code}\\\\n')",
       "Bash(curl -s -m 15 \"http://localhost:3000/blog/ansiedade-e-alimentacao-verificacao-final\" -o /dev/null -w 'STATUS:%{http_code}\\\\n')",
       "Bash(npx tsc *)",
-      "Bash(echo \"EXIT:$?\")"
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(git rm *)",
+      "Bash(git mv *)",
+      "Bash(npx prettier *)",
+      "Bash(npx next *)",
+      "Bash(perl -pi -e \"s|'./src/lib/contact/format'|'/Users/nortonricardo/Desktop/thais-dantas-psychologist/src/lib/contact/format'|\" /private/tmp/claude-501/-Users-nortonricardo-Desktop-thais-dantas-psychologist/de2ffd4e-abc3-4030-98e1-cc2b59e65d4f/scratchpad/check.ts)",
+      "Bash(bun /private/tmp/claude-501/-Users-nortonricardo-Desktop-thais-dantas-psychologist/de2ffd4e-abc3-4030-98e1-cc2b59e65d4f/scratchpad/check.ts)",
+      "Bash(npx eslint *)",
+      "Bash(curl -sS -L -o /dev/null -w '%{url_effective}\\\\n' 'https://maps.app.goo.gl/RTRvctcaTzDqioF58')",
+      "Bash(curl -sS -L -D - -o /dev/null 'https://maps.google.com/maps?q=-16.7197332,-49.2669399&z=17&output=embed')",
+      "Bash(curl -sS -L -D - -o /dev/null 'https://maps.google.com/maps?q=Consult%C3%B3rio+de+Psicologia+-+Ta%C3%ADs+Dantas,+Goi%C3%A2nia&z=17&output=embed')"
     ]
   }
 }
