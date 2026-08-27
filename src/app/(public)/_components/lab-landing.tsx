@@ -1,20 +1,27 @@
 'use client'
 
-import { ArrowRight, Phone } from 'lucide-react'
-import Image from 'next/image'
+import { ArrowRight } from 'lucide-react'
 
 import type { GooglePlaceData } from '../_constants/google-reviews-fallback'
+import type { getPublishedPosts } from '@/lib/db/blog-queries'
 import type { ContactLinks } from '@/lib/db/contact-queries'
 import { BookingLink } from './booking-link'
+import { AboutShowcase } from './about-showcase'
+import { BlogShowcase } from './blog-showcase'
+import { ContactShowcase } from './contact-showcase'
 import { HeroEditorial } from './hero-editorial'
 import { ReviewsShowcase } from './reviews-showcase'
+
+type LatestPost = Awaited<ReturnType<typeof getPublishedPosts>>['items'][number]
 
 export function LabLanding({
   googlePlace,
   contact,
+  latestPost,
 }: {
   googlePlace: GooglePlaceData | null
   contact: ContactLinks
+  latestPost: LatestPost | null
 }) {
   return (
     <div className="text-[#2D2D2D]">
@@ -185,261 +192,11 @@ export function LabLanding({
 
       {/* ── CONTENT SECTIONS ─────────────────────────────────────────────── */}
       <div className="bg-white">
-        {/* ── BLOG ─────────────────────────────────────────────────────────── */}
-        <section className="flex min-h-[90vh] flex-col bg-[#556040] px-6 py-16 sm:px-10">
-          <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col">
-            <div className="flex items-center justify-between border-b border-white/15 pb-5">
-              <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/50">
-                Blog & Reflexões
-              </span>
-              <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-white/35">
-                Em breve
-              </span>
-            </div>
-            <div className="py-12">
-              <h2 className="font-[family-name:var(--font-cormorant)] text-[clamp(3.2rem,7vw,6.5rem)] font-light leading-[1.02] text-white">
-                Onde a ciência
-                <br />
-                <em className="italic text-white/45">encontra o cotidiano.</em>
-              </h2>
-              <p className="mt-6 max-w-md text-[13px] leading-relaxed text-white/50">
-                Artigos sobre saúde mental, alimentação emocional e bem-estar —
-                escritos para quem quer entender mais sobre si mesmo.
-              </p>
-            </div>
-            <div className="mt-auto grid flex-1 grid-cols-1 gap-px border-t border-white/15 sm:grid-cols-[2fr_1fr_1fr]">
-              <article className="group flex cursor-default flex-col justify-between py-8 sm:pr-10">
-                <div>
-                  <span className="text-[9px] font-semibold uppercase tracking-[0.3em] text-white/35">
-                    Saúde Mental
-                  </span>
-                  <h3 className="mt-4 font-[family-name:var(--font-cormorant)] text-[clamp(1.5rem,2.8vw,2.2rem)] font-light leading-[1.1] text-white transition-opacity group-hover:opacity-70">
-                    Comer emocional: por que comemos quando não estamos com
-                    fome?
-                  </h3>
-                  <p className="mt-4 text-[12px] leading-relaxed text-white/45">
-                    Entender a relação entre emoções e alimentação é o primeiro
-                    passo para transformar padrões que parecem impossíveis de
-                    mudar.
-                  </p>
-                </div>
-                <div className="mt-8 flex items-center gap-3 border-t border-white/10 pt-5">
-                  <span className="text-[10px] text-white/35">
-                    8 min de leitura
-                  </span>
-                  <span className="text-white/20">·</span>
-                  <span className="text-[10px] text-white/35">Em breve</span>
-                </div>
-              </article>
-              <article className="group flex cursor-default flex-col justify-between py-8 sm:border-l sm:border-white/15 sm:px-8">
-                <div>
-                  <span className="text-[9px] font-semibold uppercase tracking-[0.3em] text-white/35">
-                    TCC
-                  </span>
-                  <h3 className="mt-4 font-[family-name:var(--font-cormorant)] text-xl font-light leading-[1.15] text-white transition-opacity group-hover:opacity-70">
-                    Como nossos pensamentos moldam o que comemos
-                  </h3>
-                </div>
-                <div className="mt-6 flex items-center gap-3 border-t border-white/10 pt-5">
-                  <span className="text-[10px] text-white/35">5 min</span>
-                </div>
-              </article>
-              <article className="group flex cursor-default flex-col justify-between py-8 sm:border-l sm:border-white/15 sm:px-8">
-                <div>
-                  <span className="text-[9px] font-semibold uppercase tracking-[0.3em] text-white/35">
-                    Endometriose
-                  </span>
-                  <h3 className="mt-4 font-[family-name:var(--font-cormorant)] text-xl font-light leading-[1.15] text-white transition-opacity group-hover:opacity-70">
-                    Dor invisível: saúde mental e endometriose
-                  </h3>
-                </div>
-                <div className="mt-6 flex items-center gap-3 border-t border-white/10 pt-5">
-                  <span className="text-[10px] text-white/35">6 min</span>
-                </div>
-              </article>
-            </div>
-          </div>
-        </section>
+        <BlogShowcase latestPost={latestPost} />
 
-        <section
-          id="sobre"
-          className="scroll-mt-20 border-t border-[#556040]/30 px-6 py-14 sm:px-10"
-        >
-          <div className="mx-auto max-w-3xl">
-            <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#556040]">
-              Sobre
-            </span>
-            <p className="mt-5 text-sm leading-relaxed text-[#2D2D2D]/90 sm:text-base sm:leading-relaxed">
-              Sou Tais Dantas, psicóloga dedicada a oferecer um ambiente seguro
-              e acolhedor. Cada encontro é conduzido com escuta qualificada,
-              respeito ao seu ritmo e foco no que faz sentido para você. O
-              processo terapêutico pode ajudar a compreender padrões emocionais,
-              desenvolver recursos internos e construir relações mais saudáveis
-              consigo e com os outros — sempre com confidencialidade e cuidado.
-            </p>
-          </div>
-        </section>
+        <AboutShowcase />
 
-        <section
-          id="especialidades"
-          className="scroll-mt-20 border-t border-[#556040]/30 px-6 py-14 sm:px-10"
-        >
-          <div className="mx-auto flex max-w-5xl items-center gap-10 sm:gap-14">
-            <div className="relative hidden aspect-square w-52 shrink-0 self-center overflow-hidden rounded-full sm:block">
-              <Image
-                src="/tais-dantas.png"
-                alt="Tais Dantas"
-                fill
-                className="object-cover object-top"
-              />
-            </div>
-            <div className="hidden h-full w-px shrink-0 self-stretch bg-[#556040]/15 sm:block" />
-            <div className="min-w-0 flex-1">
-              <span className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#556040]">
-                Especialidades
-              </span>
-              <div className="mt-10 grid grid-cols-1 gap-px sm:grid-cols-[1fr_1px_1fr]">
-                <div className="flex flex-col">
-                  <span className="mb-6 text-[10px] font-semibold uppercase tracking-[0.25em] text-[#556040]/50">
-                    Saúde & Corpo
-                  </span>
-                  {[
-                    'Obesidade',
-                    'Emagrecimento',
-                    'Cirurgia Bariátrica',
-                    'Endometriose',
-                  ].map(t => (
-                    <p
-                      key={t}
-                      className="border-t border-[#556040]/15 py-2.5 text-sm text-[#2D2D2D]/80"
-                    >
-                      {t}
-                    </p>
-                  ))}
-                </div>
-                <div className="hidden bg-[#556040]/15 sm:block" />
-                <div className="mt-12 flex flex-col sm:mt-0 sm:pl-16">
-                  <span className="mb-6 text-[10px] font-semibold uppercase tracking-[0.25em] text-[#556040]/50">
-                    Abordagem
-                  </span>
-                  {[
-                    'Transtornos Alimentares',
-                    'Terapia Cognitiva Comportamental',
-                  ].map(t => (
-                    <p
-                      key={t}
-                      className="border-t border-[#556040]/15 py-2.5 text-sm text-[#2D2D2D]/80"
-                    >
-                      {t}
-                    </p>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── CONTACT ──────────────────────────────────────────────────────── */}
-        <section className="border-t border-[#556040]/20 px-6 py-10 sm:px-10">
-          <div className="mx-auto flex max-w-5xl items-center gap-8">
-            {/* Map + Address */}
-            <div className="flex flex-1 items-center gap-6">
-              <div className="h-32 w-48 shrink-0 overflow-hidden rounded-sm">
-                <iframe
-                  src="https://maps.google.com/maps?q=-16.71971902331966,-49.2668878132625&z=17&output=embed"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Localização do consultório"
-                />
-              </div>
-              <div className="flex flex-col gap-1">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#556040]">
-                  Localização
-                </p>
-                <p className="mt-1 text-sm font-medium text-[#2D2D2D]">
-                  Av. T-4, 1478
-                </p>
-                <p className="text-sm text-[#2D2D2D]/60">Sala 172-B</p>
-                <p className="text-sm text-[#2D2D2D]/60">Setor Bueno</p>
-                <p className="text-sm text-[#2D2D2D]/60">
-                  Goiânia – GO · 74230-030
-                </p>
-              </div>
-            </div>
-
-            {/* Divider */}
-            <div className="h-28 w-px shrink-0 bg-[#556040]/15" />
-
-            {/* Info */}
-            <div className="flex flex-1 flex-col gap-1.5">
-              <p className="text-base font-medium text-[#2D2D2D]">
-                Tais Dantas
-              </p>
-              <p className="text-sm text-[#2D2D2D]/55">Psicóloga — CRP 09/</p>
-              <p className="text-sm text-[#2D2D2D]/55">
-                Especialista em Saúde Alimentar
-              </p>
-              <div className="mt-1 flex flex-col gap-1">
-                {contact.phone && (
-                  <a
-                    href={contact.phone.href}
-                    className="inline-flex items-center gap-1.5 text-sm text-[#556040] hover:opacity-75 transition-opacity"
-                  >
-                    <Phone className="size-3.5" strokeWidth={1.5} />
-                    {contact.phone.value}
-                  </a>
-                )}
-                {contact.whatsapp && (
-                  <a
-                    href={contact.whatsapp.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-sm text-[#556040] hover:opacity-75 transition-opacity"
-                  >
-                    <svg
-                      className="size-3.5"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                    >
-                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
-                      <path d="M12 0C5.373 0 0 5.373 0 12c0 2.122.554 4.112 1.523 5.84L0 24l6.338-1.499A11.944 11.944 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.885 0-3.652-.493-5.184-1.357l-.372-.22-3.862.913.978-3.768-.242-.387A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
-                    </svg>
-                    WhatsApp
-                  </a>
-                )}
-              </div>
-            </div>
-
-            {/* Divider */}
-            <div className="h-28 w-px shrink-0 bg-[#556040]/15" />
-
-            {/* Consultas */}
-            <div
-              id="consultas"
-              className="flex flex-1 flex-col gap-4 scroll-mt-20"
-            >
-              <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#556040]">
-                Consultas
-              </p>
-              <p className="text-sm leading-relaxed text-[#2D2D2D]/70">
-                Atendimentos online ou presenciais, com horários combinados
-                previamente.
-              </p>
-              <BookingLink
-                href={contact.bookingHref}
-                external={contact.bookingExternal}
-                className="mt-2 inline-flex items-center gap-2 rounded-full border border-[#556040] px-5 py-2.5 text-sm font-medium text-[#3A4424] transition-colors hover:bg-[#556040]/10"
-              >
-                Agendar uma consulta
-                <ArrowRight className="size-3.5" strokeWidth={2} />
-              </BookingLink>
-            </div>
-          </div>
-        </section>
+        <ContactShowcase contact={contact} />
       </div>
     </div>
   )
