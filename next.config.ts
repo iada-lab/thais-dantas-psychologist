@@ -41,6 +41,9 @@ const nextConfig: NextConfig = {
     return [{ source: '/(.*)', headers: securityHeaders }]
   },
   images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+    ],
     qualities: [75, 85],
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 2592000,
