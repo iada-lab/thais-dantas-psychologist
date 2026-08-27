@@ -1,8 +1,7 @@
 'use client'
 
-import { ArrowRight, ChevronDown, Phone } from 'lucide-react'
+import { ArrowRight, Phone } from 'lucide-react'
 import Image from 'next/image'
-import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 
 import {
@@ -14,9 +13,9 @@ import {
 } from '@/components/ui/carousel'
 import type { CarouselApi } from '@/components/ui/carousel'
 import type { GooglePlaceData } from '../_constants/google-reviews-fallback'
-import { homeNavItems } from '../_constants/home-nav-items'
 import type { ContactLinks } from '@/lib/db/contact-queries'
 import { BookingLink } from './booking-link'
+import { HeroEditorial } from './hero-editorial'
 
 function ReviewAvatar({ name, photoUrl }: { name: string; photoUrl?: string }) {
   const [failed, setFailed] = useState(false)
@@ -84,135 +83,7 @@ export function LabLanding({
   }, [carouselApi])
   return (
     <div className="text-[#2D2D2D]">
-      {/* ── HERO ─────────────────────────────────────────────────────────── */}
-      <section className="relative flex min-h-svh flex-col overflow-hidden bg-[#556040]">
-        {/* Nav */}
-        <header className="relative z-30 px-5 py-6 sm:px-10 sm:py-8">
-          <div className="absolute top-full inset-x-0 px-5 pt-14 sm:px-10 sm:pt-16">
-            <div className="mx-auto flex max-w-7xl justify-between">
-              <div className="flex flex-col items-start gap-2">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-white/40">
-                  Blog
-                </p>
-                <div className="flex flex-col gap-0.5">
-                  <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-white/70">
-                    Artigos & Reflexões
-                  </p>
-                  <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-white/70">
-                    Saúde Mental no Dia a Dia
-                  </p>
-                  <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-white/70">
-                    Publicações em Breve
-                  </p>
-                </div>
-              </div>
-              <div className="flex flex-col items-end gap-2">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-white/40">
-                  Atendimento
-                </p>
-                <div className="flex flex-col items-end gap-0.5">
-                  <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-white/70">
-                    Psicóloga CRP registrada
-                  </p>
-                  <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-white/70">
-                    Online e presencial
-                  </p>
-                  <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-white/70">
-                    Sessões sigilosas
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="mx-auto flex max-w-7xl items-center gap-4 sm:gap-5">
-            <nav
-              aria-label="Navegação principal"
-              className="relative flex min-w-0 flex-1 items-center rounded-full bg-[linear-gradient(to_right,rgba(255,255,255,0.18),rgba(255,255,255,0.18)_45%,rgba(255,255,255,0.12)_60%,rgba(255,255,255,0.06)_75%,rgba(255,255,255,0.02)_88%,transparent)] py-2.5 pl-5 pr-3 backdrop-blur-sm sm:py-3 sm:pl-8 sm:pr-4"
-            >
-              <Link
-                href="/"
-                className="relative z-10 shrink-0 font-[family-name:var(--font-cinzel)] text-sm font-medium tracking-wide text-white transition-colors hover:text-white/90 sm:text-base"
-              >
-                Tais Dantas
-              </Link>
-
-              <ul className="pointer-events-none absolute inset-0 flex list-none items-center justify-center gap-x-4 p-0 sm:gap-x-8">
-                {homeNavItems.map(({ href, label }) => (
-                  <li key={label} className="pointer-events-auto">
-                    <Link
-                      href={href}
-                      className="text-sm font-medium text-white/80 transition-colors hover:text-white"
-                    >
-                      {label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-
-            <BookingLink
-              href={contact.bookingHref}
-              external={contact.bookingExternal}
-              className="shrink-0 rounded-full bg-white/95 px-4 py-2 text-sm font-medium text-[#3A4424] shadow-sm transition-colors hover:bg-white sm:px-6 sm:py-2.5"
-            >
-              Agendar horário
-            </BookingLink>
-          </div>
-        </header>
-
-        {/* Chair image */}
-        <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center px-8 pb-28 pt-36 sm:pb-24 sm:pt-40 lg:pt-44">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-[40%] w-full bg-[linear-gradient(to_bottom,transparent_0%,rgba(24,32,26,0.30)_50%,rgba(24,32,26,0.62)_100%)]"
-          />
-
-          <div className="relative z-10 w-full max-w-xl translate-y-4 sm:max-w-2xl sm:translate-y-6 lg:max-w-4xl lg:translate-y-8 xl:max-w-5xl">
-            <Image
-              src="/chair.png"
-              alt="Consultório com duas cadeiras e mesa de apoio"
-              width={960}
-              height={640}
-              priority
-              className="relative z-10 h-auto w-full object-contain brightness-75"
-            />
-          </div>
-        </div>
-
-        {/* Bottom bar */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 px-6 pb-7 sm:px-10 sm:pb-9">
-          <div className="pointer-events-auto relative mx-auto flex max-w-7xl items-end">
-            {/* Description – centered absolutely */}
-            <p className="pointer-events-none absolute inset-x-0 bottom-0 mx-auto max-w-[1100px] text-center text-[10px] font-medium uppercase leading-loose tracking-[0.18em] text-white/80 sm:text-[11px]">
-              <span className="block">
-                Um espaço calmo para tratar obesidade, emagrecimento,
-                transtornos alimentares, cirurgia bariátrica e endometriose.
-              </span>
-              <span className="block">
-                Terapia Cognitiva Comportamental — atendimento online ou
-                presencial, com acompanhamento personalizado.
-              </span>
-            </p>
-
-            {/* More – bottom right */}
-            <div className="pointer-events-auto ml-auto flex items-center gap-2.5">
-              <Link
-                href="#sobre"
-                className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/80 transition-opacity hover:opacity-100"
-              >
-                Mais
-              </Link>
-              <Link
-                href="#sobre"
-                aria-label="Ver mais conteúdo"
-                className="flex size-8 items-center justify-center rounded-full border border-white/60 text-white/80 transition-colors hover:border-white hover:text-white"
-              >
-                <ChevronDown className="size-3.5" strokeWidth={2} />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      <HeroEditorial contact={contact} />
 
       {/* ── SPECIALTY SECTIONS ───────────────────────────────────────────── */}
       {[
