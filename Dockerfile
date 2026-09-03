@@ -44,9 +44,9 @@ COPY --from=builder --chown=nextjs:nodejs /app/src/lib ./src/lib
 
 USER nextjs
 
-EXPOSE 3020
+EXPOSE 3010
 
-ENV PORT=3020
+ENV PORT=3010
 ENV HOSTNAME=0.0.0.0
 
 CMD ["sh", "-c", "bun run db:migrate && node server.js"]
