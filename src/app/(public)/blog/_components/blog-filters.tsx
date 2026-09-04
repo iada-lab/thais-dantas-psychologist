@@ -86,9 +86,9 @@ export function BlogFilters({
 
   return (
     <div className="sticky top-0 z-40 border-b border-[#2D2D2D]/8 bg-white/95 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-6 py-3 sm:px-10">
-        {/* Search */}
-        <div className="relative min-w-[200px] flex-1">
+      <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-2.5 px-5 py-3 sm:gap-3 sm:px-10">
+        {/* Busca ocupa a linha inteira no celular; divide espaço a partir de sm */}
+        <div className="relative w-full min-w-[200px] sm:w-auto sm:flex-1">
           <Search className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-[#2D2D2D]/35" />
           <input
             type="text"
@@ -113,7 +113,7 @@ export function BlogFilters({
             />
           </button>
           {catOpen && (
-            <div className="absolute top-full mt-1.5 z-50 min-w-[200px] rounded-xl border border-[#2D2D2D]/10 bg-white p-1.5 shadow-lg">
+            <div className="absolute top-full left-0 z-50 mt-1.5 max-h-[60vh] w-[min(240px,calc(100vw-2.5rem))] overflow-y-auto rounded-xl border border-[#2D2D2D]/10 bg-white p-1.5 shadow-lg">
               {categories.length === 0 ? (
                 <p className="px-3 py-2 text-[12px] text-[#2D2D2D]/35">
                   Nenhuma categoria
@@ -143,7 +143,7 @@ export function BlogFilters({
           value={urlSort}
           onValueChange={v => updateParams({ sort: v === 'recent' ? null : v })}
         >
-          <SelectTrigger className="h-9 w-auto min-w-[150px] rounded-full border-[#2D2D2D]/12 bg-[#556040]/4 px-4 text-sm text-[#2D2D2D]/70 focus:ring-[#556040]/20">
+          <SelectTrigger className="h-9 w-auto min-w-[130px] rounded-full border-[#2D2D2D]/12 sm:min-w-[150px] bg-[#556040]/4 px-4 text-sm text-[#2D2D2D]/70 focus:ring-[#556040]/20">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -166,7 +166,7 @@ export function BlogFilters({
           </button>
         )}
 
-        <span className="ml-auto text-[11px] text-[#2D2D2D]/35">
+        <span className="ml-auto shrink-0 text-[11px] text-[#2D2D2D]/35">
           {totalResults} resultado{totalResults !== 1 ? 's' : ''}
         </span>
       </div>

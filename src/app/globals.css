@@ -185,3 +185,31 @@ html {
   border-color: rgba(248, 113, 113, 0.45) !important;
   background-color: rgba(0, 0, 0, 0.15) !important;
 }
+
+/**
+ * Corpo do artigo. O HTML vem do editor do gestor, então largura de imagem,
+ * tabela ou bloco de código é imprevisível — aqui garantimos que nada estoure
+ * a coluna de leitura no celular.
+ */
+.article-body :is(img, video, iframe) {
+  max-width: 100%;
+  height: auto;
+}
+
+.article-body :is(pre, table) {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.article-body :is(p, li, h1, h2, h3, h4, blockquote) {
+  overflow-wrap: anywhere;
+}
+
+/* Imagens alinhadas pelo editor viram bloco centrado no celular. */
+@media (max-width: 640px) {
+  .article-body :is(img, figure)[style*='float'] {
+    float: none !important;
+    margin-inline: auto !important;
+  }
+}

@@ -2,12 +2,12 @@ import { Suspense } from 'react'
 import Link from 'next/link'
 import { ArrowRight, Clock, Eye } from 'lucide-react'
 
-import { homeNavItems } from '../_constants/home-nav-items'
-import { BookingLink } from '../_components/booking-link'
+import { SiteNav } from '../_components/site-nav'
 import { getContactLinks } from '@/lib/db/contact-queries'
 import {
   Pagination,
   PaginationContent,
+  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -29,6 +29,28 @@ type SortValue = (typeof VALID_SORTS)[number]
 type PublishedPost = Awaited<
   ReturnType<typeof getPublishedPosts>
 >['items'][number]
+
+/**
+ * Números de página a exibir: primeira, última, a atual e as vizinhas — o
+ * resto vira reticências. Listar todas estourava a largura no celular.
+ */
+function pageWindow(current: number, total: number): (number | null)[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
+
+  const pages = new Set([1, total, current, current - 1, current + 1])
+  const sorted = [...pages]
+    .filter(p => p >= 1 && p <= total)
+    .sort((a, b) => a - b)
+
+  const out: (number | null)[] = []
+  let previous = 0
+  for (const p of sorted) {
+    if (previous && p - previous > 1) out.push(null)
+    out.push(p)
+    previous = p
+  }
+  return out
+}
 
 function buildHref(
   sp: Record<string, string | undefined>,
@@ -80,44 +102,11 @@ export default async function BlogPage({
   return (
     <div className="text-[#2D2D2D]">
       {/* ── HERO ────────────────────────────────────────────────────────── */}
-      <section className="flex flex-col bg-[#556040] px-6 py-6 sm:px-10 sm:py-8">
-        <header>
-          <div className="mx-auto flex max-w-7xl items-center gap-4 sm:gap-5">
-            <nav
-              aria-label="Navegação principal"
-              className="relative flex min-w-0 flex-1 items-center rounded-full bg-[linear-gradient(to_right,rgba(255,255,255,0.18),rgba(255,255,255,0.18)_45%,rgba(255,255,255,0.12)_60%,rgba(255,255,255,0.06)_75%,rgba(255,255,255,0.02)_88%,transparent)] py-2.5 pl-5 pr-3 backdrop-blur-sm sm:py-3 sm:pl-8 sm:pr-4"
-            >
-              <Link
-                href="/"
-                className="relative z-10 shrink-0 font-[family-name:var(--font-cinzel)] text-sm font-medium tracking-wide text-white transition-colors hover:text-white/90 sm:text-base"
-              >
-                Tais Dantas
-              </Link>
-              <ul className="pointer-events-none absolute inset-0 flex list-none items-center justify-center gap-x-4 p-0 sm:gap-x-8">
-                {homeNavItems.map(({ href, label }) => (
-                  <li key={label} className="pointer-events-auto">
-                    <Link
-                      href={href}
-                      className="text-sm font-medium text-white/80 transition-colors hover:text-white"
-                    >
-                      {label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-            <BookingLink
-              href={contact.bookingHref}
-              external={contact.bookingExternal}
-              className="shrink-0 rounded-full bg-white/95 px-4 py-2 text-sm font-medium text-[#3A4424] shadow-sm transition-colors hover:bg-white sm:px-6 sm:py-2.5"
-            >
-              Agendar horário
-            </BookingLink>
-          </div>
-        </header>
+      <section className="flex flex-col bg-[#556040]">
+        <SiteNav contact={contact} />
 
-        <div className="mx-auto w-full max-w-7xl">
-          <div className="flex items-center justify-between border-b border-white/15 pb-4 pt-8">
+        <div className="mx-auto w-full max-w-7xl px-5 pb-8 sm:px-10">
+          <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-white/15 pb-4">
             <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/50">
               Blog & Reflexões
             </span>
@@ -125,8 +114,8 @@ export default async function BlogPage({
               {total} artigo{total !== 1 ? 's' : ''}
             </span>
           </div>
-          <div className="pb-8 pt-6">
-            <h1 className="font-[family-name:var(--font-cormorant)] text-[clamp(2.5rem,5vw,5rem)] font-light leading-[1.02] text-white">
+          <div className="pt-6">
+            <h1 className="font-[family-name:var(--font-cormorant)] text-[clamp(2.5rem,7vw,5rem)] font-light leading-[1.02] text-white">
               Onde a ciência{' '}
               <em className="italic text-white/45">encontra o cotidiano.</em>
             </h1>
@@ -148,7 +137,7 @@ export default async function BlogPage({
       </Suspense>
 
       {/* ── ARTICLES ────────────────────────────────────────────────────── */}
-      <div className="bg-white px-6 py-10 sm:px-10">
+      <div className="bg-white px-5 py-10 sm:px-10">
         <div className="mx-auto max-w-7xl">
           {items.length === 0 ? (
             <div className="flex min-h-[30vh] flex-col items-center justify-center gap-3 text-center">
@@ -167,7 +156,7 @@ export default async function BlogPage({
                   className="group mb-6 grid overflow-hidden rounded-2xl border border-[#2D2D2D]/8 transition-shadow hover:shadow-lg sm:grid-cols-[55fr_45fr]"
                 >
                   {featured.coverImageUrl ? (
-                    <div className="relative min-h-[280px] overflow-hidden">
+                    <div className="relative min-h-[220px] overflow-hidden sm:min-h-[280px]">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={featured.coverImageUrl}
@@ -182,14 +171,14 @@ export default async function BlogPage({
                       />
                     </div>
                   ) : (
-                    <div className="relative flex min-h-[280px] flex-col justify-end overflow-hidden bg-[#556040] p-8">
+                    <div className="relative flex min-h-[220px] flex-col justify-end overflow-hidden bg-[#556040] p-6 sm:min-h-[280px] sm:p-8">
                       <span className="pointer-events-none absolute -right-4 -top-4 select-none font-[family-name:var(--font-cormorant)] text-[14rem] font-light leading-none text-white/5">
                         01
                       </span>
                       <TagBadge categories={featured.categories} light />
                     </div>
                   )}
-                  <div className="flex flex-col justify-between bg-white p-8">
+                  <div className="flex flex-col justify-between bg-white p-6 sm:p-8">
                     <div>
                       <span className="font-[family-name:var(--font-cormorant)] text-[6rem] font-light leading-none text-[#556040]/8 select-none">
                         01
@@ -201,7 +190,7 @@ export default async function BlogPage({
                         {featured.excerpt}
                       </p>
                     </div>
-                    <div className="mt-6 flex items-center gap-4 border-t border-[#556040]/10 pt-5">
+                    <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-[#556040]/10 pt-5">
                       <span className="text-[11px] text-[#2D2D2D]/40">
                         {featured.publishedAt
                           ? formatPostDate(featured.publishedAt)
@@ -245,7 +234,7 @@ export default async function BlogPage({
           )}
 
           {totalPages > 1 && (
-            <div className="mt-14">
+            <div className="mt-14 overflow-x-auto">
               <Pagination>
                 <PaginationContent>
                   <PaginationItem>
@@ -256,8 +245,12 @@ export default async function BlogPage({
                       }
                     />
                   </PaginationItem>
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                    p => (
+                  {pageWindow(page, totalPages).map((p, i) =>
+                    p === null ? (
+                      <PaginationItem key={`gap-${i}`}>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    ) : (
                       <PaginationItem key={p}>
                         <PaginationLink
                           href={buildHref(sp, p)}
@@ -380,7 +373,7 @@ function ArticleCard({
           </p>
         </div>
         <div
-          className={`relative mt-4 flex items-center gap-3 border-t pt-4 ${borderColor}`}
+          className={`relative mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 border-t pt-4 ${borderColor}`}
         >
           <span className={`text-[10px] ${mutedColor}`}>
             {a.publishedAt ? formatPostDate(a.publishedAt) : ''}
