@@ -2,6 +2,7 @@ import { ArrowRight, MapPin, Phone } from 'lucide-react'
 
 import type { ContactLinks } from '@/lib/db/contact-queries'
 import { BookingLink } from './booking-link'
+import { MapIframe } from './map-iframe'
 import { Reveal } from './reveal'
 
 /**
@@ -10,6 +11,13 @@ import { Reveal } from './reveal'
  * virarem um bloco verde só.
  */
 export function ContactShowcase({ contact }: { contact: ContactLinks }) {
+  const { address } = contact
+
+  const localityLine = [address.neighborhood, address.cityState]
+    .filter(Boolean)
+    .join(' · ')
+  const hasAddress = !!(address.line || localityLine || address.postalCode)
+
   return (
     <section className="relative overflow-hidden bg-[#EDE4D2] px-5 pt-28 pb-20 sm:px-10 sm:pt-32">
       {/* Verde do blog descendo, emendando as duas seções */}
@@ -31,42 +39,41 @@ export function ContactShowcase({ contact }: { contact: ContactLinks }) {
             <p className="text-[10px] font-semibold tracking-[0.3em] text-[#556040] uppercase">
               Contato
             </p>
-            <p className="shrink-0 text-[10px] font-medium tracking-[0.25em] text-[#556040]/55 uppercase">
-              Goiânia — GO
-            </p>
+            {address.cityState && (
+              <p className="shrink-0 text-[10px] font-medium tracking-[0.25em] text-[#556040]/55 uppercase">
+                {address.cityState}
+              </p>
+            )}
           </div>
         </Reveal>
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[1.2fr_0.9fr_0.9fr] lg:gap-16">
           {/* ── Mapa e endereço ─────────────────────────────────────────── */}
           <Reveal>
-            <div className="group relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-[#556040]/15 shadow-sm transition-shadow duration-300 hover:shadow-xl">
-              <iframe
-                src="https://maps.google.com/maps?q=-16.71971902331966,-49.2668878132625&z=17&output=embed"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Localização do consultório"
-                className="absolute inset-0 size-full"
-              />
-            </div>
-            <div className="mt-6 flex gap-3">
-              <MapPin
-                className="mt-0.5 size-4 shrink-0 text-[#556040]"
-                strokeWidth={1.5}
-              />
-              <address className="text-[14px] leading-[1.8] text-[#2D2D2D]/70 not-italic">
-                <span className="block font-medium text-[#2D2D2D]">
-                  Av. T-4, 1478 — Sala 172-B
-                </span>
-                Setor Bueno · Goiânia – GO
-                <br />
-                CEP 74230-030
-              </address>
-            </div>
+            {contact.mapUrl.trim() && (
+              <div className="group relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-[#556040]/15 shadow-sm transition-shadow duration-300 hover:shadow-xl">
+                {/* O wrapper já é `relative aspect-[16/10]`; h-full preenche. */}
+                <MapIframe src={contact.mapUrl} className="h-full" />
+              </div>
+            )}
+            {hasAddress && (
+              <div className="mt-6 flex gap-3">
+                <MapPin
+                  className="mt-0.5 size-4 shrink-0 text-[#556040]"
+                  strokeWidth={1.5}
+                />
+                <address className="text-[14px] leading-[1.8] text-[#2D2D2D]/70 not-italic">
+                  {address.line && (
+                    <span className="block font-medium text-[#2D2D2D]">
+                      {address.line}
+                    </span>
+                  )}
+                  {localityLine}
+                  {localityLine && address.postalCode && <br />}
+                  {address.postalCode && `CEP ${address.postalCode}`}
+                </address>
+              </div>
+            )}
           </Reveal>
 
           {/* ── Identidade e canais ─────────────────────────────────────── */}

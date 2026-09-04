@@ -120,23 +120,51 @@ function channelValueIssue(label: string, iconKey: string, value: string): strin
 }
 
 /* ─── Types ──────────────────────────────────────────────────────────────── */
-type ContactData = { id: string; mapUrl: string }
+type ContactData = {
+  id: string
+  mapUrl: string
+  addressLine: string
+  neighborhood: string
+  cityState: string
+  postalCode: string
+}
 type Channel = { id: string; label: string; iconKey: string; value: string; sortOrder: number }
+
+/** Resumo do endereço para o card do gestor — omite campos ainda vazios. */
+function addressSummary(d: ContactData): string {
+  return [d.addressLine, d.neighborhood, d.cityState, d.postalCode]
+    .filter(Boolean)
+    .join(' · ')
+}
 
 /* ─── MapSection ─────────────────────────────────────────────────────────── */
 function MapSection({ data, onSaved }: { data: ContactData; onSaved: (u: ContactData) => void }) {
   const [modalOpen, setModalOpen] = useState(false)
   const [saving, setSaving] = useState(false)
   const [mapUrlSuffix, setMapUrlSuffix] = useState(() => stripUrlScheme(data.mapUrl))
+  const [addressLine, setAddressLine] = useState(data.addressLine)
+  const [neighborhood, setNeighborhood] = useState(data.neighborhood)
+  const [cityState, setCityState] = useState(data.cityState)
+  const [postalCode, setPostalCode] = useState(data.postalCode)
 
   function openModal() {
     setMapUrlSuffix(stripUrlScheme(data.mapUrl))
+    setAddressLine(data.addressLine)
+    setNeighborhood(data.neighborhood)
+    setCityState(data.cityState)
+    setPostalCode(data.postalCode)
     setModalOpen(true)
   }
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault()
-    const parsed = contactInfoPutSchema.safeParse({ mapUrl: toHttpsStored(mapUrlSuffix).trim() })
+    const parsed = contactInfoPutSchema.safeParse({
+      mapUrl: toHttpsStored(mapUrlSuffix).trim(),
+      addressLine,
+      neighborhood,
+      cityState,
+      postalCode,
+    })
     if (!parsed.success) {
       toast.error(parsed.error.issues[0]?.message ?? 'Dados inválidos.')
       return
@@ -180,9 +208,14 @@ function MapSection({ data, onSaved }: { data: ContactData; onSaved: (u: Contact
               <Pencil size={10} /> Editar
             </button>
           </div>
-          <div className="flex items-center gap-3 px-4 py-3 border-t border-white/10">
-            <MapPin size={13} className="shrink-0 text-white/40" strokeWidth={1.5} />
-            <p className="flex-1 truncate text-xs text-white/50">{data.mapUrl}</p>
+          <div className="flex items-start gap-3 px-4 py-3 border-t border-white/10">
+            <MapPin size={13} className="mt-0.5 shrink-0 text-white/40" strokeWidth={1.5} />
+            <div className="min-w-0 flex-1">
+              {addressSummary(data) && (
+                <p className="truncate text-xs text-white/70">{addressSummary(data)}</p>
+              )}
+              <p className="truncate text-xs text-white/40">{data.mapUrl}</p>
+            </div>
           </div>
         </div>
       ) : (
@@ -226,6 +259,48 @@ function MapSection({ data, onSaved }: { data: ContactData; onSaved: (u: Contact
                 Cole o caminho após https:// ou a URL completa.
               </p>
             </div>
+
+            <div className="grid gap-1.5">
+              <Label className="text-sm text-[#2D2D2D]/70">Endereço</Label>
+              <Input
+                value={addressLine}
+                onChange={e => setAddressLine(e.target.value)}
+                placeholder="Av. T-4, 1478 — Sala 172-B"
+                className={`${INPUT_DIALOG_CLS} h-10 text-sm`}
+              />
+            </div>
+
+            <div className="grid gap-1.5 sm:grid-cols-2 sm:gap-3">
+              <div className="grid gap-1.5">
+                <Label className="text-sm text-[#2D2D2D]/70">Bairro</Label>
+                <Input
+                  value={neighborhood}
+                  onChange={e => setNeighborhood(e.target.value)}
+                  placeholder="Setor Bueno"
+                  className={`${INPUT_DIALOG_CLS} h-10 text-sm`}
+                />
+              </div>
+              <div className="grid gap-1.5">
+                <Label className="text-sm text-[#2D2D2D]/70">CEP</Label>
+                <Input
+                  value={postalCode}
+                  onChange={e => setPostalCode(e.target.value)}
+                  placeholder="74230-030"
+                  className={`${INPUT_DIALOG_CLS} h-10 text-sm`}
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-1.5">
+              <Label className="text-sm text-[#2D2D2D]/70">Cidade / UF</Label>
+              <Input
+                value={cityState}
+                onChange={e => setCityState(e.target.value)}
+                placeholder="Goiânia – GO"
+                className={`${INPUT_DIALOG_CLS} h-10 text-sm`}
+              />
+            </div>
+
             <DialogFooter className="pt-2">
               <Button type="button" variant="ghost" size="sm"
                 className={BTN_CANCEL}
@@ -245,7 +320,11 @@ function MapSection({ data, onSaved }: { data: ContactData; onSaved: (u: Contact
 }
 
 /* ─── ChannelCard ────────────────────────────────────────────────────────── */
-function ChannelCard({ channel, onDeleted }: { channel: Channel; onDeleted: (id: string) => void }) {
+function ChannelCard({ channel, onEdit, onDeleted }: {
+  channel: Channel
+  onEdit: () => void
+  onDeleted: (id: string) => void
+}) {
   const [deleting, setDeleting] = useState(false)
   const Icon = ICON_MAP[channel.iconKey] ?? Link
 
@@ -275,6 +354,16 @@ function ChannelCard({ channel, onDeleted }: { channel: Channel; onDeleted: (id:
         <p className="mt-0.5 truncate text-sm text-white/80">{channel.value}</p>
       </div>
 
+      {/* Editar */}
+      <button
+        type="button"
+        onClick={onEdit}
+        className="shrink-0 flex h-7 w-7 items-center justify-center rounded-full text-white/20 opacity-0 transition-all group-hover:opacity-100 hover:bg-white/10 hover:text-white/70"
+        title="Editar"
+      >
+        <Pencil size={13} />
+      </button>
+
       {/* Deletar */}
       <button
         type="button"
@@ -291,17 +380,30 @@ function ChannelCard({ channel, onDeleted }: { channel: Channel; onDeleted: (id:
   )
 }
 
-/* ─── AddChannelModal ────────────────────────────────────────────────────── */
-function AddChannelModal({ open, onClose, onAdded }: {
+/* ─── ChannelModal ───────────────────────────────────────────────────────── */
+/** Mesmo formulário para criar e editar: com `channel`, faz PUT; sem, POST. */
+function ChannelModal({ open, channel, onClose, onSaved }: {
   open: boolean
+  channel: Channel | null
   onClose: () => void
-  onAdded: (channel: Channel) => void
+  onSaved: (channel: Channel) => void
 }) {
+  const editing = !!channel
   const [saving, setSaving] = useState(false)
   const [label, setLabel] = useState('')
   const [iconKey, setIconKey] = useState('mail')
   const [value, setValue] = useState('')
   const [valueError, setValueError] = useState<string | null>(null)
+
+  // Recarrega os campos toda vez que o modal abre, para não herdar o canal
+  // editado anteriormente.
+  useEffect(() => {
+    if (!open) return
+    setLabel(channel?.label ?? '')
+    setIconKey(channel?.iconKey ?? 'mail')
+    setValue(channel?.value ?? '')
+    setValueError(null)
+  }, [open, channel])
 
   function handleTypeChange(type: string) {
     const found = CONTACT_TYPES.find(t => t.label === type)
@@ -317,7 +419,7 @@ function AddChannelModal({ open, onClose, onAdded }: {
   }
 
   function handleClose() {
-    setLabel(''); setIconKey('mail'); setValue(''); setValueError(null)
+    setValueError(null)
     onClose()
   }
 
@@ -332,20 +434,23 @@ function AddChannelModal({ open, onClose, onAdded }: {
     }
     setSaving(true)
     try {
-      const res = await fetch('/api/contato/channels', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(parsed.data),
-      })
+      const res = await fetch(
+        editing ? `/api/contato/channels/${channel.id}` : '/api/contato/channels',
+        {
+          method: editing ? 'PUT' : 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(parsed.data),
+        }
+      )
       if (!res.ok) {
         const body = await res.json().catch(() => ({}))
-        throw new Error(typeof body.error === 'string' ? body.error : 'Erro ao criar canal')
+        throw new Error(typeof body.error === 'string' ? body.error : 'Erro ao salvar canal')
       }
-      onAdded(await res.json())
+      onSaved(await res.json())
       handleClose()
-      toast.success('Canal adicionado!')
+      toast.success(editing ? 'Canal atualizado!' : 'Canal adicionado!')
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Erro ao criar canal.')
+      toast.error(err instanceof Error ? err.message : 'Erro ao salvar canal.')
     } finally {
       setSaving(false)
     }
@@ -375,7 +480,9 @@ function AddChannelModal({ open, onClose, onAdded }: {
         onOpenAutoFocus={e => e.preventDefault()}
       >
         <DialogHeader>
-          <DialogTitle className="text-[#2D2D2D]">Novo canal de contato</DialogTitle>
+          <DialogTitle className="text-[#2D2D2D]">
+            {editing ? 'Editar canal de contato' : 'Novo canal de contato'}
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSave} className="space-y-4 pt-1">
           <div className="grid gap-1.5">
@@ -451,9 +558,10 @@ function AddChannelModal({ open, onClose, onAdded }: {
               onClick={handleClose} disabled={saving}>
               Cancelar
             </Button>
-            <Button type="submit" size="sm" loading={saving} loadingLabel="Adicionando…"
+            <Button type="submit" size="sm" loading={saving}
+              loadingLabel={editing ? 'Salvando…' : 'Adicionando…'}
               disabled={!label} className={`border-0 ${BTN_PRIMARY}`}>
-              Adicionar
+              {editing ? 'Salvar' : 'Adicionar'}
             </Button>
           </DialogFooter>
         </form>
@@ -468,6 +576,21 @@ export function ContatoWorkspace() {
   const [data, setData] = useState<ContactData | null>(null)
   const [channels, setChannels] = useState<Channel[]>([])
   const [modalOpen, setModalOpen] = useState(false)
+  const [editingChannel, setEditingChannel] = useState<Channel | null>(null)
+
+  function openChannelModal(channel: Channel | null) {
+    setEditingChannel(channel)
+    setModalOpen(true)
+  }
+
+  /** Substitui o canal editado no lugar, ou anexa quando é novo. */
+  function upsertChannel(saved: Channel) {
+    setChannels(prev =>
+      prev.some(c => c.id === saved.id)
+        ? prev.map(c => (c.id === saved.id ? saved : c))
+        : [...prev, saved]
+    )
+  }
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -538,7 +661,7 @@ export function ContatoWorkspace() {
                 type="button"
                 size="sm"
                 className={`shrink-0 gap-1.5 border-0 ${BTN_PRIMARY}`}
-                onClick={() => setModalOpen(true)}
+                onClick={() => openChannelModal(null)}
               >
                 <Plus size={13} /> Adicionar
               </Button>
@@ -550,6 +673,7 @@ export function ContatoWorkspace() {
                   <ChannelCard
                     key={ch.id}
                     channel={ch}
+                    onEdit={() => openChannelModal(ch)}
                     onDeleted={id => setChannels(prev => prev.filter(c => c.id !== id))}
                   />
                 ))}
@@ -557,7 +681,7 @@ export function ContatoWorkspace() {
             ) : (
               <button
                 type="button"
-                onClick={() => setModalOpen(true)}
+                onClick={() => openChannelModal(null)}
                 className="flex w-full flex-col items-center justify-center gap-3 rounded-2xl py-12 text-center transition-colors hover:bg-white/5"
                 style={GLASS}
               >
@@ -575,10 +699,11 @@ export function ContatoWorkspace() {
         </div>
       ) : null}
 
-      <AddChannelModal
+      <ChannelModal
         open={modalOpen}
+        channel={editingChannel}
         onClose={() => setModalOpen(false)}
-        onAdded={ch => setChannels(prev => [...prev, ch])}
+        onSaved={upsertChannel}
       />
     </div>
   )

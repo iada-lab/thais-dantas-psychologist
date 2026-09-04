@@ -20,6 +20,12 @@ const bytea = customType<{ data: Buffer }>({
 export const contactInfo = pgTable('contact_info', {
   id: uuid('id').defaultRandom().primaryKey(),
   mapUrl: text('map_url').notNull().default(''),
+  /** Logradouro, número e complemento — "Av. T-4, 1478 — Sala 172-B" */
+  addressLine: text('address_line').notNull().default(''),
+  neighborhood: text('neighborhood').notNull().default(''),
+  /** Cidade e UF juntos, como devem aparecer — "Goiânia – GO" */
+  cityState: text('city_state').notNull().default(''),
+  postalCode: text('postal_code').notNull().default(''),
   createdAt: timestamp('created_at', { withTimezone: true })
     .defaultNow()
     .notNull(),

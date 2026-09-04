@@ -9,6 +9,10 @@ import { validationErrorResponse } from '@/lib/validation/api'
 const SELECTED_FIELDS = {
   id: contactInfo.id,
   mapUrl: contactInfo.mapUrl,
+  addressLine: contactInfo.addressLine,
+  neighborhood: contactInfo.neighborhood,
+  cityState: contactInfo.cityState,
+  postalCode: contactInfo.postalCode,
   createdAt: contactInfo.createdAt,
   updatedAt: contactInfo.updatedAt,
 }
@@ -43,13 +47,11 @@ export async function PUT(req: NextRequest) {
     const parsed = contactInfoPutSchema.safeParse(raw)
     if (!parsed.success) return validationErrorResponse(parsed.error)
 
-    const { mapUrl } = parsed.data
-
     const existing = await getOrCreateContactInfo()
     const [updated] = await db
       .update(contactInfo)
       .set({
-        mapUrl,
+        ...parsed.data,
         updatedAt: new Date(),
       })
       .where(eq(contactInfo.id, existing.id))

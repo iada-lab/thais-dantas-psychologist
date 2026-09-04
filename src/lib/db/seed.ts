@@ -3,6 +3,22 @@ import { db } from './index'
 import { authUsers, contactChannels, contactInfo } from './schema'
 import { auth } from '@/lib/auth'
 
+/**
+ * Localização do consultório: Av. T-4, 1478 — a coordenada resolve para o
+ * número 1478 da Avenida T-4, CEP 74230-030.
+ */
+const seedContactInfo = {
+  mapUrl:
+    'https://maps.google.com/maps?q=-16.71971902331966,-49.2668878132625&z=17&output=embed',
+  addressLine: 'Av. T-4, 1478 — Sala 172-B',
+  neighborhood: 'Setor Bueno',
+  cityState: 'Goiânia – GO',
+  postalCode: '74230-030',
+} as const
+
+/** Mesmo número atende telefone e WhatsApp. */
+const SEED_PHONE = '(62) 9 8252-3582'
+
 const seedChannels = [
   {
     label: 'E-mail',
@@ -11,16 +27,22 @@ const seedChannels = [
     sortOrder: 0,
   },
   {
+    label: 'Telefone',
+    iconKey: 'phone',
+    value: SEED_PHONE,
+    sortOrder: 1,
+  },
+  {
     label: 'WhatsApp',
     iconKey: 'message-circle',
-    value: '+55 62 9 0000-0000',
-    sortOrder: 1,
+    value: SEED_PHONE,
+    sortOrder: 2,
   },
   {
     label: 'Instagram',
     iconKey: 'instagram',
     value: 'https://instagram.com/thaisdantas',
-    sortOrder: 2,
+    sortOrder: 3,
   },
 ] as const
 
@@ -32,10 +54,7 @@ async function main() {
 
   const [info] = await db
     .insert(contactInfo)
-    .values({
-      mapUrl:
-        'https://maps.google.com/maps?q=-16.6784792,-49.2453736&z=17&output=embed',
-    })
+    .values(seedContactInfo)
     .returning({ id: contactInfo.id })
 
   if (!info) throw new Error('Falha ao criar contact_info')

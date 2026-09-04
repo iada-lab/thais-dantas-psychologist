@@ -19,7 +19,7 @@ import {
 import { telHref, whatsappHref } from '@/lib/contact/format'
 import { getContactData } from '@/lib/db/contact-queries'
 
-import { MapIframe } from './map-iframe'
+import { MapIframe } from '../../_components/map-iframe'
 
 const ICON_MAP: Record<string, LucideIcon> = {
   mail: Mail,
@@ -51,13 +51,15 @@ function display(value: string) {
   return value.replace(/^https?:\/\//, '').replace(/\/$/, '')
 }
 
-const DEFAULT_MAP_URL =
-  'https://maps.google.com/maps?q=-16.6784792,-49.2453736&z=17&output=embed'
-
 export async function ContatoSection() {
-  const { mapUrl: savedMapUrl, channels } = await getContactData()
+  const { mapUrl, address, channels } = await getContactData()
 
-  const mapUrl = savedMapUrl.trim() || DEFAULT_MAP_URL
+  // Sem fallback chumbado: um endereço "de reserva" só serve para apontar o
+  // paciente para o lugar errado quando o campo estiver vazio no gestor.
+  const cityLine = [address.cityState, address.postalCode]
+    .filter(Boolean)
+    .join(' · ')
+  const hasAddress = !!(address.line || address.neighborhood || cityLine)
 
   return (
     <>
@@ -150,32 +152,42 @@ export async function ContatoSection() {
           </p>
 
           {/* Mapa solto, como o vídeo na home — sem competir com o card */}
-          <div className="mt-6 overflow-hidden rounded-2xl border border-[#E4DAC2]/25">
-            <MapIframe
-              src={mapUrl}
-              className="h-[280px] [filter:saturate(0.65)_sepia(0.12)_contrast(0.96)] sm:h-[360px]"
-            />
-          </div>
-
-          <div className="mt-4 flex items-start gap-3 rounded-2xl border border-[#556040]/10 bg-[#EDE4D2] p-6 shadow-sm">
-            <MapPin
-              className="mt-0.5 size-4 shrink-0 text-[#556040]"
-              strokeWidth={1.5}
-            />
-            <div className="min-w-0 flex-1">
-              <h2 className="font-[family-name:var(--font-cormorant)] text-2xl leading-tight font-light text-[#2D2D2D]">
-                Setor Bueno
-              </h2>
-              <address className="mt-2 text-[13px] leading-[1.75] text-[#2D2D2D]/65 not-italic">
-                Av. T-4, 1478 — Sala 172-B
-                <br />
-                Goiânia – GO · 74230-030
-              </address>
-              <p className="mt-4 border-t border-[#556040]/12 pt-3 text-[10px] font-medium tracking-[0.18em] text-[#556040] uppercase">
-                Atendimento presencial e online
-              </p>
+          {mapUrl.trim() ? (
+            <div className="mt-6 overflow-hidden rounded-2xl border border-[#E4DAC2]/25">
+              <MapIframe
+                src={mapUrl}
+                className="h-[280px] [filter:saturate(0.65)_sepia(0.12)_contrast(0.96)] sm:h-[360px]"
+              />
             </div>
-          </div>
+          ) : (
+            <p className="mt-6 rounded-2xl border border-dashed border-[#E4DAC2]/30 px-6 py-12 text-center text-[13px] text-white/50">
+              Mapa não cadastrado.
+            </p>
+          )}
+
+          {hasAddress && (
+            <div className="mt-4 flex items-start gap-3 rounded-2xl border border-[#556040]/10 bg-[#EDE4D2] p-6 shadow-sm">
+              <MapPin
+                className="mt-0.5 size-4 shrink-0 text-[#556040]"
+                strokeWidth={1.5}
+              />
+              <div className="min-w-0 flex-1">
+                {address.neighborhood && (
+                  <h2 className="font-[family-name:var(--font-cormorant)] text-2xl leading-tight font-light text-[#2D2D2D]">
+                    {address.neighborhood}
+                  </h2>
+                )}
+                <address className="mt-2 text-[13px] leading-[1.75] text-[#2D2D2D]/65 not-italic">
+                  {address.line}
+                  {address.line && cityLine && <br />}
+                  {cityLine}
+                </address>
+                <p className="mt-4 border-t border-[#556040]/12 pt-3 text-[10px] font-medium tracking-[0.18em] text-[#556040] uppercase">
+                  Atendimento presencial e online
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>

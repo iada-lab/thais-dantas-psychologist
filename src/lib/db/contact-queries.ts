@@ -12,9 +12,25 @@ export type PublicContactChannel = {
   value: string
 }
 
+/** Endereço do consultório, cadastrado no gestor. Campos vazios são omitidos. */
+export type ContactAddress = {
+  line: string
+  neighborhood: string
+  cityState: string
+  postalCode: string
+}
+
 export type ContactData = {
   mapUrl: string
+  address: ContactAddress
   channels: PublicContactChannel[]
+}
+
+const EMPTY_ADDRESS: ContactAddress = {
+  line: '',
+  neighborhood: '',
+  cityState: '',
+  postalCode: '',
 }
 
 /**
@@ -25,11 +41,18 @@ export type ContactData = {
 export const getContactData = unstable_cache(
   async (): Promise<ContactData> => {
     const [info] = await db
-      .select({ id: contactInfo.id, mapUrl: contactInfo.mapUrl })
+      .select({
+        id: contactInfo.id,
+        mapUrl: contactInfo.mapUrl,
+        addressLine: contactInfo.addressLine,
+        neighborhood: contactInfo.neighborhood,
+        cityState: contactInfo.cityState,
+        postalCode: contactInfo.postalCode,
+      })
       .from(contactInfo)
       .limit(1)
 
-    if (!info) return { mapUrl: '', channels: [] }
+    if (!info) return { mapUrl: '', address: EMPTY_ADDRESS, channels: [] }
 
     const channels = await db
       .select({
@@ -42,7 +65,16 @@ export const getContactData = unstable_cache(
       .where(eq(contactChannels.contactInfoId, info.id))
       .orderBy(asc(contactChannels.sortOrder), asc(contactChannels.createdAt))
 
-    return { mapUrl: info.mapUrl, channels }
+    return {
+      mapUrl: info.mapUrl,
+      address: {
+        line: info.addressLine,
+        neighborhood: info.neighborhood,
+        cityState: info.cityState,
+        postalCode: info.postalCode,
+      },
+      channels,
+    }
   },
   ['contato-data'],
   { tags: ['contato'] }
@@ -51,6 +83,10 @@ export const getContactData = unstable_cache(
 export type ContactLink = { value: string; href: string }
 
 export type ContactLinks = {
+  /** URL de embed do mapa cadastrada no gestor — string vazia se não houver. */
+  mapUrl: string
+  /** Endereço do consultório, para exibição. */
+  address: ContactAddress
   /** Telefone cadastrado, com href `tel:` — null se não houver. */
   phone: ContactLink | null
   /** WhatsApp cadastrado, com link wa.me já com a mensagem de agendamento. */
@@ -68,9 +104,13 @@ function findByLabel(
   return channels.find(c => c.label.toLowerCase() === label) ?? null
 }
 
-/** Links de telefone/WhatsApp e destino do CTA, derivados do que está no banco. */
+/**
+ * Mapa, endereço, links de telefone/WhatsApp e destino do CTA — tudo derivado
+ * do que está cadastrado no gestor. É o que as páginas públicas recebem como
+ * `contact`, então nenhum componente precisa repetir a query nem chumbar valor.
+ */
 export async function getContactLinks(): Promise<ContactLinks> {
-  const { channels } = await getContactData()
+  const { mapUrl, address, channels } = await getContactData()
 
   const phoneChannel = findByLabel(channels, 'telefone')
   const phoneHref = phoneChannel ? telHref(phoneChannel.value) : null
@@ -79,6 +119,8 @@ export async function getContactLinks(): Promise<ContactLinks> {
   const waHref = whatsappChannel ? whatsappHref(whatsappChannel.value) : null
 
   return {
+    mapUrl,
+    address,
     phone:
       phoneChannel && phoneHref
         ? { value: phoneChannel.value, href: phoneHref }

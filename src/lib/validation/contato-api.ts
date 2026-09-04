@@ -127,11 +127,21 @@ export const contactChannelPostSchema = z
 
 export type ContactChannelPostBody = z.infer<typeof contactChannelPostSchema>
 
+const addressField = (label: string, max = 160) =>
+  z
+    .string()
+    .max(max, `${label}: no máximo ${max} caracteres.`)
+    .transform(s => s.trim())
+
 export const contactInfoPutSchema = z.object({
   mapUrl: z
     .string()
     .max(4000, 'URL do mapa: no máximo 4000 caracteres.')
     .transform(s => s.trim()),
+  addressLine: addressField('Endereço'),
+  neighborhood: addressField('Bairro', 80),
+  cityState: addressField('Cidade / UF', 80),
+  postalCode: addressField('CEP', 20),
 })
 
 export type ContactInfoPutBody = z.infer<typeof contactInfoPutSchema>
