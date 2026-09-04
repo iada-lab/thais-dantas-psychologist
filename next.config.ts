@@ -24,7 +24,7 @@ const securityHeaders = [
       "img-src 'self' data: blob: https://images.unsplash.com https://lh3.googleusercontent.com",
       "font-src 'self'",
       "connect-src 'self'",
-      "frame-src 'self' https://www.google.com https://maps.google.com",
+      "frame-src 'self' https://www.google.com https://maps.google.com https://www.youtube-nocookie.com",
       "frame-ancestors 'none'",
       "object-src 'none'",
       "base-uri 'self'",
@@ -41,6 +41,9 @@ const nextConfig: NextConfig = {
     return [{ source: '/(.*)', headers: securityHeaders }]
   },
   images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+    ],
     qualities: [75, 85],
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 2592000,

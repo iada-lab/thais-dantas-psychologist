@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 
 import { LabLanding } from './_components/lab-landing'
 import { GOOGLE_REVIEWS_FALLBACK } from './_constants/google-reviews-fallback'
+import { getPublishedPosts } from '@/lib/db/blog-queries'
 import { getContactLinks } from '@/lib/db/contact-queries'
 
 // Os contatos vêm do banco (cache com tag 'contato'), então a página não pode
@@ -14,7 +15,16 @@ export const metadata: Metadata = {
 }
 
 export default async function Home() {
-  const contact = await getContactLinks()
+  const [contact, latest] = await Promise.all([
+    getContactLinks(),
+    getPublishedPosts({ perPage: 1 }),
+  ])
 
-  return <LabLanding googlePlace={GOOGLE_REVIEWS_FALLBACK} contact={contact} />
+  return (
+    <LabLanding
+      googlePlace={GOOGLE_REVIEWS_FALLBACK}
+      contact={contact}
+      latestPost={latest.items[0] ?? null}
+    />
+  )
 }

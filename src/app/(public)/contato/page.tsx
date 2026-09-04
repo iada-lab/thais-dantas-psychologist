@@ -1,9 +1,7 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { Suspense } from 'react'
 
-import { homeNavItems } from '../_constants/home-nav-items'
-import { BookingLink } from '../_components/booking-link'
+import { SiteNav } from '../_components/site-nav'
 import { getContactLinks } from '@/lib/db/contact-queries'
 import { ContatoSection } from './_components/contato-section'
 import { ContatoSkeleton } from './_components/contato-skeleton'
@@ -19,47 +17,51 @@ export default async function ContatoPage() {
   const contact = await getContactLinks()
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#556040] px-6 py-6 sm:px-10 sm:py-8">
-      {/* ── NAV ──────────────────────────────────────────────────────────── */}
-      <header>
-        <div className="mx-auto flex max-w-7xl items-center gap-4 sm:gap-5">
-          <nav
-            aria-label="Navegação principal"
-            className="relative flex min-w-0 flex-1 items-center rounded-full bg-[linear-gradient(to_right,rgba(255,255,255,0.18),rgba(255,255,255,0.18)_45%,rgba(255,255,255,0.12)_60%,rgba(255,255,255,0.06)_75%,rgba(255,255,255,0.02)_88%,transparent)] py-2.5 pl-5 pr-3 backdrop-blur-sm sm:py-3 sm:pl-8 sm:pr-4"
-          >
-            <Link
-              href="/"
-              className="relative z-10 shrink-0 font-[family-name:var(--font-cinzel)] text-sm font-medium tracking-wide text-white transition-colors hover:text-white/90 sm:text-base"
-            >
-              Tais Dantas
-            </Link>
+    <div className="relative flex min-h-svh flex-col overflow-hidden bg-[#556040]">
+      {/* Areia no rodapé, fechando a página como nas seções da home */}
+      <svg
+        aria-hidden
+        viewBox="0 0 1440 320"
+        preserveAspectRatio="none"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-[32%] w-full"
+      >
+        <defs>
+          <linearGradient id="areia-contato" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stopColor="#DCC3A0" stopOpacity="0.26" />
+            <stop offset="100%" stopColor="#DCC3A0" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <path
+          fill="url(#areia-contato)"
+          d="M0 170 C 250 100, 480 230, 720 175 C 960 120, 1200 215, 1440 155 L1440 320 L0 320 Z"
+        />
+      </svg>
 
-            <ul className="pointer-events-none absolute inset-0 flex list-none items-center justify-center gap-x-4 p-0 sm:gap-x-8">
-              {homeNavItems.map(({ href, label }) => (
-                <li key={label} className="pointer-events-auto">
-                  <Link
-                    href={href}
-                    className="text-sm font-medium text-white/80 transition-colors hover:text-white"
-                  >
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+      {/* Traços curvos nas bordas */}
+      <svg
+        aria-hidden
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1"
+        className="pointer-events-none absolute inset-0 z-0 hidden size-full text-[#E4DAC2] lg:block"
+      >
+        <path
+          d="M-4 14 C 30 24, 66 8, 104 20"
+          vectorEffect="non-scaling-stroke"
+          opacity="0.22"
+        />
+        <path
+          d="M-4 90 C 32 80, 68 96, 104 84"
+          vectorEffect="non-scaling-stroke"
+          opacity="0.18"
+        />
+      </svg>
 
-          <BookingLink
-            href={contact.bookingHref}
-            external={contact.bookingExternal}
-            className="shrink-0 rounded-full bg-white/95 px-4 py-2 text-sm font-medium text-[#3A4424] shadow-sm transition-colors hover:bg-white sm:px-6 sm:py-2.5"
-          >
-            Agendar horário
-          </BookingLink>
-        </div>
-      </header>
+      <SiteNav contact={contact} />
 
-      {/* ── CONTENT ──────────────────────────────────────────────────────── */}
-      <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col">
+      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col px-5 pb-16 sm:px-10">
         <Suspense fallback={<ContatoSkeleton />}>
           <ContatoSection />
         </Suspense>

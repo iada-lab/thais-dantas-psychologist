@@ -1,9 +1,10 @@
 import {
+  ArrowUpRight,
   Facebook,
   Github,
   Globe,
   Instagram,
-  Link,
+  Link as LinkIcon,
   Linkedin,
   Mail,
   MapPin,
@@ -14,6 +15,7 @@ import {
   Youtube,
   type LucideIcon,
 } from 'lucide-react'
+
 import { telHref, whatsappHref } from '@/lib/contact/format'
 import { getContactData } from '@/lib/db/contact-queries'
 
@@ -32,7 +34,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
   globe: Globe,
   'map-pin': MapPin,
   send: Send,
-  link: Link,
+  link: LinkIcon,
 }
 
 function getHref(label: string, value: string): string | null {
@@ -42,6 +44,11 @@ function getHref(label: string, value: string): string | null {
   if (l === 'whatsapp') return whatsappHref(value)
   if (l === 'localização') return null
   return value.startsWith('http') ? value : `https://${value}`
+}
+
+/** Encurta URLs para exibição, mantendo o link íntegro no href. */
+function display(value: string) {
+  return value.replace(/^https?:\/\//, '').replace(/\/$/, '')
 }
 
 const DEFAULT_MAP_URL =
@@ -54,76 +61,78 @@ export async function ContatoSection() {
 
   return (
     <>
-      {/* Top bar */}
-      <div className="flex items-center justify-between border-b border-white/15 pb-5 pt-10">
-        <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/50">
+      <div className="flex items-end justify-between gap-6 border-b border-white/15 pt-8 pb-6">
+        <span className="text-[10px] font-semibold tracking-[0.3em] text-white/55 uppercase">
           Contato
         </span>
-        <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-white/35">
+        <span className="shrink-0 text-[10px] font-medium tracking-[0.25em] text-[#E4DAC2]/70 uppercase">
           Online &amp; Presencial
         </span>
       </div>
 
-      {/* Heading */}
-      <div className="py-8">
-        <h1 className="font-[family-name:var(--font-cormorant)] text-[clamp(2.2rem,4.5vw,4rem)] font-light leading-[1.05] text-white">
-          Fale <em className="italic text-white/45">comigo.</em>
+      <div className="py-12 lg:py-14">
+        <h1 className="font-[family-name:var(--font-cormorant)] text-[clamp(2.6rem,5.5vw,4.75rem)] leading-[1.04] font-light text-[#F4EFE3]">
+          Fale <em className="text-[#E2D7BD] italic">comigo.</em>
         </h1>
-        <p className="mt-4 max-w-md text-[13px] leading-relaxed text-white/50">
+        <p className="mt-5 max-w-md text-[14px] leading-[1.85] text-white/65">
           Escolha o canal de sua preferência para agendar uma consulta ou tirar
           dúvidas — responderei em breve.
         </p>
       </div>
 
-      {/* Grid */}
-      <div className="grid flex-1 grid-cols-1 gap-px border-t border-white/15 sm:grid-cols-2">
-        {/* Channels */}
-        <div className="flex flex-col py-6 sm:pr-10">
+      <div className="grid flex-1 gap-10 pb-4 lg:grid-cols-[1fr_1.15fr] lg:gap-14">
+        {/* ── Canais ───────────────────────────────────────────────────── */}
+        <div>
+          <p className="text-[10px] font-semibold tracking-[0.25em] text-white/45 uppercase">
+            Canais
+          </p>
+
           {channels.length === 0 ? (
-            <p className="py-4 text-[13px] text-white/40">
+            <p className="mt-6 rounded-xl border border-dashed border-[#E4DAC2]/30 px-6 py-8 text-center text-[13px] text-white/50">
               Nenhum canal de contato cadastrado.
             </p>
           ) : (
-            <ul className="list-none p-0">
+            <ul className="mt-6 flex list-none flex-col gap-3 p-0">
               {channels.map(ch => {
-                const Icon = ICON_MAP[ch.iconKey] ?? Link
+                const Icon = ICON_MAP[ch.iconKey] ?? LinkIcon
                 const href = getHref(ch.label, ch.value)
                 const isExternal = !!href && href.startsWith('http')
 
-                const content = (
+                const inner = (
                   <>
-                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-white/20 text-white/60">
-                      <Icon size={13} strokeWidth={1.5} />
+                    <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#556040]/12 text-[#556040]">
+                      <Icon size={17} strokeWidth={1.5} />
                     </span>
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-[9px] font-semibold uppercase tracking-[0.28em] text-white/35">
+                    <div className="min-w-0 flex-1">
+                      <span className="block text-[9px] font-semibold tracking-[0.28em] text-[#556040] uppercase">
                         {ch.label}
                       </span>
-                      <span className="text-[13px] text-white/75">
-                        {ch.value}
+                      <span className="mt-1 block truncate text-[14px] text-[#2D2D2D]">
+                        {display(ch.value)}
                       </span>
                     </div>
+                    {href && (
+                      <ArrowUpRight className="size-4 shrink-0 text-[#556040]/50 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    )}
                   </>
                 )
 
+                const card =
+                  'group flex items-center gap-4 rounded-xl border border-[#556040]/10 bg-[#EDE4D2] p-4 shadow-sm transition-all duration-300'
+
                 return (
-                  <li
-                    key={ch.id}
-                    className="border-b border-white/10 last:border-b-0"
-                  >
+                  <li key={ch.id}>
                     {href ? (
                       <a
                         href={href}
                         target={isExternal ? '_blank' : undefined}
                         rel={isExternal ? 'noopener noreferrer' : undefined}
-                        className="group flex items-center gap-4 py-4 transition-opacity hover:opacity-60"
+                        className={`${card} hover:-translate-y-0.5 hover:bg-[#F5EFE2] hover:shadow-lg`}
                       >
-                        {content}
+                        {inner}
                       </a>
                     ) : (
-                      <div className="flex items-center gap-4 py-4">
-                        {content}
-                      </div>
+                      <div className={card}>{inner}</div>
                     )}
                   </li>
                 )
@@ -132,35 +141,38 @@ export async function ContatoSection() {
           )}
         </div>
 
-        {/* Location */}
-        <div className="flex flex-col py-6 sm:border-l sm:border-white/15 sm:px-8">
-          <span className="text-[9px] font-semibold uppercase tracking-[0.3em] text-white/35">
+        {/* ── Localização ──────────────────────────────────────────────── */}
+        <div>
+          <p className="text-[10px] font-semibold tracking-[0.25em] text-white/45 uppercase">
             Localização
-          </span>
-          <h3 className="mt-3 font-[family-name:var(--font-cormorant)] text-2xl font-light leading-tight text-white">
-            Setor Bueno
-          </h3>
-          <p className="mt-2 text-[12px] leading-relaxed text-white/45">
-            Av. T-4, 1478 — Sala 172-B
-            <br />
-            Goiânia – GO · 74230-030
           </p>
 
-          <div
-            className="mt-5 flex-1 overflow-hidden rounded-xl border border-white/15 opacity-85"
-            style={{ minHeight: '280px' }}
-          >
-            <MapIframe src={mapUrl} className="h-full min-h-[280px]" />
+          {/* Mapa solto, como o vídeo na home — sem competir com o card */}
+          <div className="mt-6 overflow-hidden rounded-2xl border border-[#E4DAC2]/25">
+            <MapIframe
+              src={mapUrl}
+              className="h-[280px] [filter:saturate(0.65)_sepia(0.12)_contrast(0.96)] sm:h-[360px]"
+            />
           </div>
 
-          <div className="mt-4 flex items-center gap-2 border-t border-white/10 pt-4">
+          <div className="mt-4 flex items-start gap-3 rounded-2xl border border-[#556040]/10 bg-[#EDE4D2] p-6 shadow-sm">
             <MapPin
-              className="size-3 shrink-0 text-white/25"
+              className="mt-0.5 size-4 shrink-0 text-[#556040]"
               strokeWidth={1.5}
             />
-            <span className="text-[10px] text-white/35">
-              Atendimento presencial e online
-            </span>
+            <div className="min-w-0 flex-1">
+              <h2 className="font-[family-name:var(--font-cormorant)] text-2xl leading-tight font-light text-[#2D2D2D]">
+                Setor Bueno
+              </h2>
+              <address className="mt-2 text-[13px] leading-[1.75] text-[#2D2D2D]/65 not-italic">
+                Av. T-4, 1478 — Sala 172-B
+                <br />
+                Goiânia – GO · 74230-030
+              </address>
+              <p className="mt-4 border-t border-[#556040]/12 pt-3 text-[10px] font-medium tracking-[0.18em] text-[#556040] uppercase">
+                Atendimento presencial e online
+              </p>
+            </div>
           </div>
         </div>
       </div>
