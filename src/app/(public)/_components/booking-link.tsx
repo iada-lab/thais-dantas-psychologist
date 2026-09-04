@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 
 /**
  * CTA de agendamento. Aponta para o WhatsApp cadastrado no gestor (link
@@ -9,11 +9,13 @@ export function BookingLink({
   href,
   external,
   className,
+  style,
   children,
 }: {
   href: string
   external: boolean
   className?: string
+  style?: CSSProperties
   children: ReactNode
 }) {
   if (external) {
@@ -23,6 +25,7 @@ export function BookingLink({
         target="_blank"
         rel="noopener noreferrer"
         className={className}
+        style={style}
       >
         {children}
       </a>
@@ -30,7 +33,7 @@ export function BookingLink({
   }
 
   return (
-    <Link href={href} className={className}>
+    <Link href={href} className={className} style={style}>
       {children}
     </Link>
   )
