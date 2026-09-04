@@ -1,5 +1,7 @@
 import Image from 'next/image'
 
+import { OfficeCarousel } from './office-carousel'
+
 const CONDICOES = [
   'Obesidade',
   'Emagrecimento',
@@ -9,8 +11,10 @@ const CONDICOES = [
 ]
 
 /**
- * Sobre + Especialidades numa seção só, em areia — quebra a sequência de
- * seções verdes e serve de respiro antes do contato.
+ * Sobre + Especialidades numa seção só, em areia — entra logo depois do hero,
+ * quebrando a sequência de seções verdes antes das avaliações. A onda de topo
+ * traz o verde do hero; embaixo, quem faz a emenda é a onda de areia no topo
+ * das avaliações.
  */
 export function AboutShowcase() {
   return (
@@ -72,6 +76,14 @@ export function AboutShowcase() {
               confidencialidade e cuidado.
             </p>
           </div>
+        </div>
+
+        {/* ── Consultório ──────────────────────────────────────────────────── */}
+        <div className="mt-24 border-t border-[#556040]/20 pt-14 lg:mt-32">
+          <p className="text-[10px] font-semibold tracking-[0.3em] text-[#556040] uppercase">
+            O consultório
+          </p>
+          <OfficeCarousel />
         </div>
 
         {/* ── Especialidades ───────────────────────────────────────────────── */}

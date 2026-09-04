@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 import { formatPostDate } from '@/lib/blog/format'
+import { Reveal } from './reveal'
 import type { getPublishedPosts } from '@/lib/db/blog-queries'
 
 type Post = Awaited<ReturnType<typeof getPublishedPosts>>['items'][number]
@@ -42,8 +43,10 @@ function Cover({ post }: { post: Post }) {
 export function BlogShowcase({ latestPost }: { latestPost: Post | null }) {
   return (
     <section
-      className={`relative flex flex-col justify-center overflow-hidden bg-[#556040] px-5 py-24 sm:px-10 ${
-        latestPost ? 'min-h-svh' : 'min-h-[70vh]'
+      /* Sem `min-h-svh`: a seção passa a ter a altura do conteúdo e some o
+         vazio que sobrava entre o cabeçalho dela e o artigo. */
+      className={`relative flex flex-col justify-center overflow-hidden bg-[#556040] px-5 py-20 sm:px-10 sm:py-24 ${
+        latestPost ? '' : 'min-h-[60vh]'
       }`}
     >
       {/* Areia descendo da seção anterior */}
@@ -90,17 +93,19 @@ export function BlogShowcase({ latestPost }: { latestPost: Post | null }) {
       {latestPost ? (
         /* ── Com artigo publicado ──────────────────────────────────────── */
         <div className="relative z-10 mx-auto w-full max-w-[1800px]">
-          <div className="flex items-end justify-between gap-8 border-b border-white/15 pb-6">
-            <p className="text-[10px] font-semibold tracking-[0.3em] text-white/45 uppercase">
-              Blog &amp; Reflexões
-            </p>
-            <p className="shrink-0 text-[10px] font-medium tracking-[0.25em] text-white/35 uppercase">
-              Último artigo
-            </p>
-          </div>
+          <Reveal>
+            <div className="flex items-end justify-between gap-8 border-b border-white/15 pb-6">
+              <p className="text-[10px] font-semibold tracking-[0.3em] text-white/45 uppercase">
+                Blog &amp; Reflexões
+              </p>
+              <p className="shrink-0 text-[10px] font-medium tracking-[0.25em] text-white/35 uppercase">
+                Último artigo
+              </p>
+            </div>
+          </Reveal>
 
-          <div className="mt-14 grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:items-center lg:gap-20">
-            <div>
+          <div className="mt-12 grid gap-10 lg:grid-cols-[1.2fr_1fr] lg:items-center lg:gap-20">
+            <Reveal>
               <h2 className="font-[family-name:var(--font-cormorant)] text-[clamp(2.6rem,5.5vw,4.75rem)] leading-[1.04] font-light text-[#F4EFE3]">
                 Onde a ciência
                 <br />
@@ -118,40 +123,42 @@ export function BlogShowcase({ latestPost }: { latestPost: Post | null }) {
                 Ver todos os artigos
                 <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
-            </div>
+            </Reveal>
 
-            <Link
-              href={`/blog/${latestPost.slug}`}
-              className="group flex w-full flex-col overflow-hidden rounded-2xl border border-[#556040]/10 bg-[#EDE4D2] shadow-sm transition-all duration-300 hover:-translate-y-1 hover:bg-[#F5EFE2] hover:shadow-xl lg:ml-auto lg:max-w-[480px]"
-            >
-              <Cover post={latestPost} />
+            <Reveal delay={150} className="lg:ml-auto lg:max-w-[480px]">
+              <Link
+                href={`/blog/${latestPost.slug}`}
+                className="group flex w-full flex-col overflow-hidden rounded-2xl border border-[#556040]/10 bg-[#EDE4D2] shadow-sm transition-all duration-300 hover:-translate-y-1 hover:bg-[#F5EFE2] hover:shadow-xl"
+              >
+                <Cover post={latestPost} />
 
-              <div className="p-6">
-                {latestPost.categories.length > 0 && (
-                  <p className="text-[9px] font-semibold tracking-[0.3em] text-[#556040] uppercase">
-                    {latestPost.categories[0].name}
-                  </p>
-                )}
-                <h3 className="mt-4 font-[family-name:var(--font-cormorant)] text-[clamp(1.45rem,2.1vw,1.85rem)] leading-[1.15] font-light text-[#2D2D2D]">
-                  {latestPost.title}
-                </h3>
-                {latestPost.excerpt && (
-                  <p className="mt-3 line-clamp-2 text-[13px] leading-[1.65] text-[#2D2D2D]/65">
-                    {latestPost.excerpt}
-                  </p>
-                )}
-                <div className="mt-5 flex items-center gap-2 border-t border-[#556040]/12 pt-4 text-[10px] tracking-[0.12em] text-[#2D2D2D]/45 uppercase">
-                  {latestPost.publishedAt && (
-                    <>
-                      <span>{formatPostDate(latestPost.publishedAt)}</span>
-                      <span className="text-[#556040]/25">·</span>
-                    </>
+                <div className="p-6">
+                  {latestPost.categories.length > 0 && (
+                    <p className="text-[9px] font-semibold tracking-[0.3em] text-[#556040] uppercase">
+                      {latestPost.categories[0].name}
+                    </p>
                   )}
-                  <span>{latestPost.readTimeMinutes} min de leitura</span>
-                  <ArrowRight className="ml-auto size-4 text-[#556040] transition-transform group-hover:translate-x-1" />
+                  <h3 className="mt-4 font-[family-name:var(--font-cormorant)] text-[clamp(1.45rem,2.1vw,1.85rem)] leading-[1.15] font-light text-[#2D2D2D]">
+                    {latestPost.title}
+                  </h3>
+                  {latestPost.excerpt && (
+                    <p className="mt-3 line-clamp-2 text-[13px] leading-[1.65] text-[#2D2D2D]/65">
+                      {latestPost.excerpt}
+                    </p>
+                  )}
+                  <div className="mt-5 flex items-center gap-2 border-t border-[#556040]/12 pt-4 text-[10px] tracking-[0.12em] text-[#2D2D2D]/45 uppercase">
+                    {latestPost.publishedAt && (
+                      <>
+                        <span>{formatPostDate(latestPost.publishedAt)}</span>
+                        <span className="text-[#556040]/25">·</span>
+                      </>
+                    )}
+                    <span>{latestPost.readTimeMinutes} min de leitura</span>
+                    <ArrowRight className="ml-auto size-4 text-[#556040] transition-transform group-hover:translate-x-1" />
+                  </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+            </Reveal>
           </div>
         </div>
       ) : (

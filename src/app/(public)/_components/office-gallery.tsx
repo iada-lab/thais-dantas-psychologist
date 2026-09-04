@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
 
+import { OFFICE_PHOTOS } from '../_constants/office-photos'
 import {
   Dialog,
   DialogClose,
@@ -13,22 +14,11 @@ import {
 } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
 
-const PHOTOS = [
-  {
-    src: '/office_2.jpeg',
-    alt: 'Ambiente de acolhimento do consultório',
-    pos: 'left-[66%] top-[-14%] h-[30%] w-[21%] rotate-[-6deg]',
-  },
-  {
-    src: '/office_1.jpeg',
-    alt: 'Poltronas e mesa de apoio do consultório',
-    pos: 'left-[76%] top-[22%] h-[34%] w-[23%]',
-  },
-  {
-    src: '/office_3.jpeg',
-    alt: 'Detalhe da sala de atendimento',
-    pos: 'left-[66%] top-[66%] h-[28%] w-[20%] rotate-[6deg]',
-  },
+/** Posição de cada arco em volta do retrato, na ordem de OFFICE_PHOTOS. */
+const ARCS = [
+  'left-[66%] top-[-14%] h-[30%] w-[21%] rotate-[-6deg]',
+  'left-[76%] top-[22%] h-[34%] w-[23%]',
+  'left-[66%] top-[66%] h-[28%] w-[20%] rotate-[6deg]',
 ] as const
 
 /**
@@ -40,11 +30,11 @@ export function OfficeGallery() {
   const [index, setIndex] = useState(0)
 
   const go = (step: number) =>
-    setIndex(i => (i + step + PHOTOS.length) % PHOTOS.length)
+    setIndex(i => (i + step + OFFICE_PHOTOS.length) % OFFICE_PHOTOS.length)
 
   return (
     <>
-      {PHOTOS.map(({ src, alt, pos }, i) => (
+      {OFFICE_PHOTOS.map(({ src, alt }, i) => (
         <button
           key={src}
           type="button"
@@ -58,7 +48,7 @@ export function OfficeGallery() {
             'cursor-pointer transition-transform duration-300 ease-out',
             'hover:z-10 hover:scale-110 focus-visible:z-10 focus-visible:scale-110',
             'focus-visible:ring-2 focus-visible:ring-[#F4EFE3] focus-visible:outline-none',
-            pos
+            ARCS[i]
           )}
         >
           <Image
@@ -86,7 +76,7 @@ export function OfficeGallery() {
 
           {/* Retrato 3:4, mesma proporção dos arquivos — nada é cortado. */}
           <div className="relative mx-auto aspect-3/4 w-[min(86vw,56vh)]">
-            {PHOTOS.map(({ src, alt }, i) => (
+            {OFFICE_PHOTOS.map(({ src, alt }, i) => (
               <Image
                 key={src}
                 src={src}
@@ -118,7 +108,7 @@ export function OfficeGallery() {
             </button>
 
             <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 gap-2 rounded-full bg-black/25 px-3 py-2 backdrop-blur-sm">
-              {PHOTOS.map(({ src }, i) => (
+              {OFFICE_PHOTOS.map(({ src }, i) => (
                 <button
                   key={src}
                   type="button"

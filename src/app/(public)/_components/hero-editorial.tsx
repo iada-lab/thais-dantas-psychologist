@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { BookingLink } from './booking-link'
 import { SiteNav } from './site-nav'
 import type { ContactLinks } from '@/lib/db/contact-queries'
+import { cn } from '@/lib/utils'
 import { OfficeGallery } from './office-gallery'
 
 /**
@@ -13,6 +14,47 @@ import { OfficeGallery } from './office-gallery'
  * paleta verde e o header da home.
  */
 export function HeroEditorial({ contact }: { contact: ContactLinks }) {
+  /**
+   * Estatísticas e CTA vivem no fluxo do texto em `lg`, mas empilhados eles
+   * precisam aparecer depois do retrato — colunas diferentes do grid, então
+   * são renderizados nas duas posições e cada uma se esconde no breakpoint
+   * da outra.
+   */
+  const stats = (className: string) => (
+    <div className={cn('items-start gap-10 sm:gap-14', className)}>
+      <div>
+        <p className="font-[family-name:var(--font-cormorant)] text-[2.75rem] font-light leading-none text-[#F4EFE3]">
+          05
+        </p>
+        <p className="mt-2 text-[10px] font-medium tracking-[0.2em] text-white/55 uppercase">
+          Áreas de atendimento
+        </p>
+      </div>
+      <div className="border-l border-white/15 pl-10 sm:pl-14">
+        <p className="font-[family-name:var(--font-cormorant)] text-[2.75rem] font-light leading-none text-[#F4EFE3]">
+          TCC
+        </p>
+        <p className="mt-2 text-[10px] font-medium tracking-[0.2em] text-white/55 uppercase">
+          Abordagem clínica
+        </p>
+      </div>
+    </div>
+  )
+
+  const cta = (className: string) => (
+    <BookingLink
+      href={contact.bookingHref}
+      external={contact.bookingExternal}
+      className={cn(
+        'group inline-flex w-fit items-center gap-3 rounded-full bg-[#222A17] px-8 py-4 text-sm font-medium text-[#F4EFE3] transition-colors hover:bg-[#171D0F]',
+        className
+      )}
+    >
+      Agendar uma conversa
+      <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+    </BookingLink>
+  )
+
   return (
     <section className="relative flex min-h-svh flex-col overflow-hidden bg-[#556040]">
       {/* ── Textura de fundo ─────────────────────────────────────────────── */}
@@ -59,8 +101,10 @@ export function HeroEditorial({ contact }: { contact: ContactLinks }) {
       <SiteNav contact={contact} />
 
       {/* ── Conteúdo ─────────────────────────────────────────────────────── */}
-      <div className="relative z-20 mx-auto flex w-full max-w-7xl flex-1 items-center px-5 sm:px-10">
-        <div className="relative grid w-full items-center gap-16 py-6 sm:gap-14 lg:grid-cols-[1fr_1.45fr] lg:gap-8 lg:py-8">
+      <div className="relative z-20 mx-auto flex w-full max-w-7xl flex-1 items-start px-5 sm:px-10">
+        {/* `my-auto` centraliza quando há folga e vira 0 quando não há: numa tela
+            baixa o conteúdo transborda para baixo, nunca por cima do cabeçalho. */}
+        <div className="relative my-auto grid w-full items-center gap-16 py-6 sm:gap-14 lg:grid-cols-[1fr_1.45fr] lg:gap-8 lg:py-8">
           {/* Traços saindo do retrato — acima e abaixo do texto, e um laço à direita */}
           <svg
             aria-hidden
@@ -141,41 +185,21 @@ export function HeroEditorial({ contact }: { contact: ContactLinks }) {
               respeita o seu tempo.
             </p>
 
-            <BookingLink
-              href={contact.bookingHref}
-              external={contact.bookingExternal}
-              className="group mt-7 inline-flex items-center gap-3 rounded-full bg-[#222A17] px-8 py-4 text-sm font-medium text-[#F4EFE3] transition-colors hover:bg-[#171D0F]"
-            >
-              Agendar uma conversa
-              <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
-            </BookingLink>
+            {cta('mt-7 hidden lg:inline-flex')}
 
-            <div className="mt-9 flex items-start gap-10 sm:gap-14">
-              <div>
-                <p className="font-[family-name:var(--font-cormorant)] text-[2.75rem] font-light leading-none text-[#F4EFE3]">
-                  05
-                </p>
-                <p className="mt-2 text-[10px] font-medium uppercase tracking-[0.2em] text-white/55">
-                  Áreas de atendimento
-                </p>
-              </div>
-              <div className="border-l border-white/15 pl-10 sm:pl-14">
-                <p className="font-[family-name:var(--font-cormorant)] text-[2.75rem] font-light leading-none text-[#F4EFE3]">
-                  TCC
-                </p>
-                <p className="mt-2 text-[10px] font-medium uppercase tracking-[0.2em] text-white/55">
-                  Abordagem clínica
-                </p>
-              </div>
-            </div>
+            {stats('mt-9 hidden lg:flex')}
           </div>
 
           {/* ── Coluna direita: retrato + consultório ────────────────────── */}
-          <div className="relative mx-auto w-full max-w-[330px] sm:max-w-[500px] lg:max-w-[700px]">
+          <div className="relative mx-auto w-full max-w-[330px] sm:max-w-[500px] lg:mt-24 lg:max-w-[min(700px,calc(100svh-17rem))]">
             {/* O retrato define a altura; os arcos orbitam em volta dele.
-                O recuo negativo só entra em `lg`: empilhado, ele subiria por
-                cima das estatísticas da coluna de texto. */}
-            <div className="relative aspect-4/5 w-[76%] lg:-top-24">
+
+                Em `lg` o retrato sobe 14% da própria altura e o primeiro arco
+                extrapola o topo do bloco em outros 14%: o `mt-24` devolve essa
+                folga ao layout para que nada passe por baixo do cabeçalho, e o
+                teto em `svh` encolhe a composição em telas baixas. Empilhado,
+                o recuo subiria por cima das estatísticas — por isso só em `lg`. */}
+            <div className="relative aspect-4/5 w-[76%] lg:-translate-y-[14%]">
               {/* Contorno deslocado */}
               <div
                 aria-hidden
@@ -229,6 +253,12 @@ export function HeroEditorial({ contact }: { contact: ContactLinks }) {
             </div>
 
             <OfficeGallery />
+          </div>
+
+          {/* Empilhado: estatísticas logo abaixo do retrato e o CTA fechando. */}
+          <div className="flex flex-col items-center gap-8 lg:hidden">
+            {stats('flex')}
+            {cta('')}
           </div>
         </div>
       </div>

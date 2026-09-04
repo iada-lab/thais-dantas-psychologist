@@ -28,6 +28,8 @@ export function LabLanding({
     <div className="text-[#2D2D2D]">
       <HeroEditorial contact={contact} />
 
+      <AboutShowcase />
+
       {googlePlace && googlePlace.reviews.length > 0 && (
         <ReviewsShowcase googlePlace={googlePlace} />
       )}
@@ -258,8 +260,6 @@ export function LabLanding({
       {/* ── CONTENT SECTIONS ─────────────────────────────────────────────── */}
       <div className="bg-white">
         <BlogShowcase latestPost={latestPost} />
-
-        <AboutShowcase />
 
         <ContactShowcase contact={contact} />
       </div>

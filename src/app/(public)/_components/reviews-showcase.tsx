@@ -71,8 +71,21 @@ export function ReviewsShowcase({
   )
 
   return (
-    <section className="relative flex min-h-svh flex-col justify-center overflow-hidden bg-[#556040] px-5 py-20 sm:px-10">
-      {/* Areia descendo do hero, emendando as duas seções */}
+    <section className="relative flex min-h-svh flex-col justify-center overflow-hidden bg-[#556040] px-5 pt-32 pb-20 sm:px-10 sm:pt-36">
+      {/* Areia descendo da seção Sobre, emendando as duas seções */}
+      <svg
+        aria-hidden
+        viewBox="0 0 1440 220"
+        preserveAspectRatio="none"
+        className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-24 w-full sm:h-32"
+      >
+        <path
+          fill="#EDE4D2"
+          d="M0 0 L1440 0 L1440 104 C 1190 40, 930 176, 680 108 C 450 46, 220 168, 0 96 Z"
+        />
+      </svg>
+
+      {/* Véu de areia no topo, ecoando a textura do hero */}
       <svg
         aria-hidden
         viewBox="0 0 1440 300"
