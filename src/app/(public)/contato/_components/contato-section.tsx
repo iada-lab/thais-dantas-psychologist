@@ -82,7 +82,9 @@ export async function ContatoSection() {
 
       <div className="grid flex-1 gap-10 pb-4 lg:grid-cols-[1fr_1.15fr] lg:gap-14">
         {/* ── Canais ───────────────────────────────────────────────────── */}
-        <div>
+        {/* `min-w-0`: o valor do canal é `truncate` (nowrap), então sem isso a
+            coluna cresce até caber o texto inteiro e estoura a tela. */}
+        <div className="min-w-0">
           <p className="text-[10px] font-semibold tracking-[0.25em] text-white/45 uppercase">
             Canais
           </p>
@@ -142,7 +144,7 @@ export async function ContatoSection() {
         </div>
 
         {/* ── Localização ──────────────────────────────────────────────── */}
-        <div>
+        <div className="min-w-0">
           <p className="text-[10px] font-semibold tracking-[0.25em] text-white/45 uppercase">
             Localização
           </p>

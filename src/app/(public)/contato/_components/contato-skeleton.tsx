@@ -16,7 +16,7 @@ export function ContatoSkeleton() {
       </div>
 
       <div className="grid flex-1 gap-10 pb-4 lg:grid-cols-[1fr_1.15fr] lg:gap-14">
-        <div>
+        <div className="min-w-0">
           <Skeleton className="h-3 w-14 bg-white/10" />
           <div className="mt-6 flex flex-col gap-3">
             {[...Array(3)].map((_, i) => (
@@ -34,7 +34,7 @@ export function ContatoSkeleton() {
           </div>
         </div>
 
-        <div>
+        <div className="min-w-0">
           <Skeleton className="h-3 w-20 bg-white/10" />
           <Skeleton className="mt-6 h-[280px] rounded-2xl bg-white/10 sm:h-[360px]" />
           <div className="mt-4 rounded-2xl border border-[#556040]/10 bg-[#EDE4D2] p-6">
