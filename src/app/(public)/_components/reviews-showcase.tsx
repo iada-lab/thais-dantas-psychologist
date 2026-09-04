@@ -115,7 +115,9 @@ export function ReviewsShowcase({
 
       <div className="relative z-10 mx-auto grid w-full max-w-[1800px] items-center gap-16 lg:grid-cols-[1fr_1.95fr] lg:gap-14">
         {/* ── Avaliações ─────────────────────────────────────────────────── */}
-        <div>
+        {/* `min-w-0`: sem isso a coluna cresce até o min-content dos controles
+            (uma bolinha por avaliação) e estoura a largura da tela. */}
+        <div className="min-w-0">
           <p className="text-[10px] font-semibold tracking-[0.25em] text-white/45 uppercase">
             Avaliações
           </p>
@@ -180,7 +182,7 @@ export function ReviewsShowcase({
             })}
           </div>
 
-          <div className="mt-7 flex items-center gap-5">
+          <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-4">
             <button
               type="button"
               onClick={() => go(-1)}
@@ -198,7 +200,7 @@ export function ReviewsShowcase({
               <ChevronRight className="size-4" />
             </button>
 
-            <div className="flex gap-1.5">
+            <div className="flex min-w-0 flex-wrap gap-1.5">
               {reviews.map((r, i) => (
                 <button
                   key={`${r.authorName}-${i}`}
@@ -228,7 +230,7 @@ export function ReviewsShowcase({
         </div>
 
         {/* ── Vídeo ──────────────────────────────────────────────────────── */}
-        <div className="relative">
+        <div className="relative min-w-0">
           {/* Moldura deslocada, ecoando o contorno do oval do hero */}
           <div
             aria-hidden

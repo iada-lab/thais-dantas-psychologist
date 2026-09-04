@@ -60,7 +60,7 @@ export function HeroEditorial({ contact }: { contact: ContactLinks }) {
 
       {/* ── Conteúdo ─────────────────────────────────────────────────────── */}
       <div className="relative z-20 mx-auto flex w-full max-w-7xl flex-1 items-center px-5 sm:px-10">
-        <div className="relative grid w-full items-center gap-10 py-6 lg:grid-cols-[1fr_1.45fr] lg:gap-8 lg:py-8">
+        <div className="relative grid w-full items-center gap-16 py-6 sm:gap-14 lg:grid-cols-[1fr_1.45fr] lg:gap-8 lg:py-8">
           {/* Traços saindo do retrato — acima e abaixo do texto, e um laço à direita */}
           <svg
             aria-hidden
@@ -171,13 +171,15 @@ export function HeroEditorial({ contact }: { contact: ContactLinks }) {
           </div>
 
           {/* ── Coluna direita: retrato + consultório ────────────────────── */}
-          <div className="relative mx-auto w-full max-w-[350px] sm:max-w-[500px] lg:max-w-[700px]">
-            {/* O retrato define a altura; os arcos orbitam em volta dele. */}
-            <div className="relative -top-14 aspect-4/5 w-[76%] lg:-top-24">
+          <div className="relative mx-auto w-full max-w-[330px] sm:max-w-[500px] lg:max-w-[700px]">
+            {/* O retrato define a altura; os arcos orbitam em volta dele.
+                O recuo negativo só entra em `lg`: empilhado, ele subiria por
+                cima das estatísticas da coluna de texto. */}
+            <div className="relative aspect-4/5 w-[76%] lg:-top-24">
               {/* Contorno deslocado */}
               <div
                 aria-hidden
-                className="absolute -inset-x-6 -inset-y-2 rotate-[22deg] rounded-[50%] border border-[#E4DAC2]/45 bg-black/25"
+                className="absolute -inset-x-4 -inset-y-1 rotate-[18deg] rounded-[50%] border border-[#E4DAC2]/45 bg-black/25 sm:-inset-x-6 sm:-inset-y-2 sm:rotate-[22deg]"
               />
 
               {/* Retrato em oval inclinado */}

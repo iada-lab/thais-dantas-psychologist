@@ -117,9 +117,9 @@ export function LabLanding({
           const colorSide = (
             <div
               key="color"
-              className={`relative flex items-center px-10 py-20 sm:px-16 xl:px-24 ${bg}`}
+              className={`relative flex items-center px-6 py-16 sm:px-10 lg:px-16 lg:py-20 xl:px-24 ${bg}`}
             >
-              <div className="relative z-10 flex max-w-[460px] flex-col gap-6">
+              <div className="relative z-10 flex max-w-[460px] flex-col gap-5 sm:gap-6">
                 <span
                   className="text-[11px] font-semibold uppercase tracking-[0.25em]"
                   style={{ color: ink, opacity: 0.75 }}
@@ -127,7 +127,7 @@ export function LabLanding({
                   {tag}
                 </span>
                 <h2
-                  className="font-[family-name:var(--font-cormorant)] text-[clamp(2.6rem,4.2vw,4.4rem)] font-light leading-[1.06]"
+                  className="font-[family-name:var(--font-cormorant)] text-[clamp(2.25rem,7vw,4.4rem)] font-light leading-[1.06] lg:text-[clamp(2.6rem,4.2vw,4.4rem)]"
                   style={{ color: ink }}
                 >
                   {title}
@@ -159,19 +159,29 @@ export function LabLanding({
           const blendColor = light ? '#B8AEA4' : '#7A9068'
 
           const imageSide = (
-            <div key="image" className="group relative overflow-hidden">
+            <div
+              key="image"
+              className="group relative order-first h-[45vh] min-h-[280px] overflow-hidden lg:order-none lg:h-auto lg:min-h-0"
+            >
               <Image
                 src={src}
                 alt={alt}
                 fill
-                sizes="(max-width: 1024px) 60vw, 55vw"
+                sizes="(max-width: 1024px) 100vw, 55vw"
                 className="object-cover object-top brightness-90 transition-transform duration-[1100ms] ease-in-out group-hover:scale-105"
               />
               {/* Dark overlay — same level as colorSide */}
               <div className="pointer-events-none absolute inset-0 z-10 bg-black/20" />
-              {/* Blend into solid color — above dark overlay */}
+              {/* Empilhado, a foto derrete na cor que vem logo abaixo dela. */}
               <div
-                className={`pointer-events-none absolute top-0 z-20 h-full w-[55%] ${flip ? 'right-0' : 'left-0'}`}
+                className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-[45%] lg:hidden"
+                style={{
+                  background: `linear-gradient(to top, ${blendColor}, transparent)`,
+                }}
+              />
+              {/* Em duas colunas, a emenda é lateral — na direção do painel. */}
+              <div
+                className={`pointer-events-none absolute top-0 z-20 hidden h-full w-[55%] lg:block ${flip ? 'right-0' : 'left-0'}`}
                 style={{
                   background: flip
                     ? `linear-gradient(to left, ${blendColor}, transparent)`
@@ -180,7 +190,7 @@ export function LabLanding({
               />
               {/* Shadow on screen edge — above dark overlay */}
               <div
-                className={`pointer-events-none absolute top-0 z-20 h-full w-[20%] ${flip ? 'left-0' : 'right-0'}`}
+                className={`pointer-events-none absolute top-0 z-20 hidden h-full w-[20%] lg:block ${flip ? 'left-0' : 'right-0'}`}
                 style={{
                   background: flip
                     ? 'linear-gradient(to right, rgba(0,0,0,0.35), transparent)'
@@ -188,7 +198,9 @@ export function LabLanding({
                 }}
               />
               <span
-                className={`absolute bottom-7 z-30 text-[11px] font-medium uppercase tracking-[0.22em] text-white [text-shadow:0_1px_6px_rgba(0,0,0,0.55)] ${flip ? 'left-6' : 'right-6'}`}
+                /* Empilhado, o rótulo desce até passar da onda que cobre o
+                   topo da foto — senão fica metade escondido atrás dela. */
+                className={`absolute top-[4.5rem] right-5 z-30 text-[11px] font-medium uppercase tracking-[0.22em] text-white [text-shadow:0_1px_6px_rgba(0,0,0,0.55)] sm:top-24 lg:top-auto lg:bottom-7 ${flip ? 'lg:right-auto lg:left-6' : 'lg:right-6'}`}
               >
                 {label}
               </span>
@@ -198,7 +210,7 @@ export function LabLanding({
           return (
             <section
               key={title}
-              className={`relative grid min-h-svh ${flip ? 'grid-cols-[40fr_60fr]' : 'grid-cols-[60fr_40fr]'}`}
+              className={`relative grid grid-cols-1 lg:min-h-svh ${flip ? 'lg:grid-cols-[40fr_60fr]' : 'lg:grid-cols-[60fr_40fr]'}`}
             >
               {/* Onda do topo na própria cor: encontra a onda de rodapé do
                   painel anterior, pintada nesta mesma cor, e as duas viram
