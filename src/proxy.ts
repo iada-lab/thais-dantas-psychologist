@@ -48,8 +48,13 @@ export async function proxy(req: NextRequest) {
 
   if (session) return NextResponse.next()
 
-  // Sem sessão — aplica rate limit antes de qualquer resposta
-  if (isRateLimited(getIp(req))) {
+  // Sem sessão — aplica rate limit antes de qualquer resposta.
+  //
+  // Só em produção: em dev não há reverse proxy mandando `x-forwarded-for`,
+  // então `getIp` devolve 'unknown' para todo mundo e as 30 req/min viram um
+  // balde único — bastava recarregar o /manager algumas vezes deslogado para
+  // a própria pessoa se bloquear e receber um JSON de 429 no lugar do login.
+  if (process.env.NODE_ENV === 'production' && isRateLimited(getIp(req))) {
     return NextResponse.json(
       { error: 'Muitas requisições. Tente novamente em instantes.' },
       { status: 429, headers: { 'Retry-After': '60' } }
