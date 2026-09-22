@@ -83,7 +83,7 @@ export function ContactShowcase({ contact }: { contact: ContactLinks }) {
                 Tais Dantas
               </h2>
               <p className="mt-3 text-[11px] font-medium tracking-[0.18em] text-[#556040] uppercase">
-                Psicóloga — CRP 09/
+                Psicóloga — CRP 09/10025
               </p>
               <p className="mt-1.5 text-[13px] text-[#2D2D2D]/60">
                 Especialista em Saúde Alimentar
