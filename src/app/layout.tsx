@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Cormorant_Garamond, Inter, Cinzel } from 'next/font/google'
 
 import './globals.css'
@@ -15,6 +15,15 @@ export const metadata: Metadata = {
     icon: '/favicon.png',
     apple: '/favicon.png',
   },
+}
+
+/**
+ * `only light` também como meta tag: o Android decide se vai aplicar o Auto
+ * Dark Theme antes do CSS carregar, e a meta no `<head>` chega primeiro.
+ * Mesma declaração que existe em `globals.css`.
+ */
+export const viewport: Viewport = {
+  colorScheme: 'only light',
 }
 
 const inter = Inter({

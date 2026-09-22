@@ -3,6 +3,16 @@
 
 html {
   scroll-behavior: smooth;
+
+  /**
+   * O site é desenhado só em tema claro. Sem esta declaração, o Auto Dark
+   * Theme do Chrome/Samsung Internet no Android reescreve as cores quando o
+   * sistema está em modo escuro: o verde do hero vira quase preto e os botões
+   * claros ficam escuros. O `only` é o que impede o navegador de aplicar o
+   * escurecimento dele (superfícies escuras do gestor seguem usando
+   * `scheme-dark` pontualmente).
+   */
+  color-scheme: only light;
 }
 
 @source inline('bg-{red,rose,pink,fuchsia,purple,violet,indigo,blue,sky,cyan,teal,emerald,green,lime,yellow,amber,orange,stone,slate,zinc,neutral}-{400,500,600,700,800,900}');
